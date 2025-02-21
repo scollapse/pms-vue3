@@ -4,7 +4,7 @@ import Login from '@/pages/admin/login.vue'
 import AdminIndex from '@/pages/admin/index.vue'
 import Admin from '@/layouts/admin/admin.vue'
 import AdminTagList from '@/pages/admin/tag/TagPage.vue'
-
+import AdminProjectIndex from '@/pages/admin/project/ProjectPage.vue'
 //统一在这里声明所有路由
 const routes = [
     {
@@ -39,9 +39,15 @@ const routes = [
                 meta: {
                     title: '标签管理'
                 }
+            },
+            {
+                path: "/admin/project/index",
+                component: AdminProjectIndex,
+                meta: {
+                    title: '项目管理'
+                }
             }
         ]
-        
     }
 ]
 

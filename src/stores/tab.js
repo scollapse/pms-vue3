@@ -5,6 +5,7 @@ export const useTabStore = defineStore('tab', {
         tabs: [
             { title: '仪表盘', path: '/admin/index' },
             { title: '标签管理', path: '/admin/tag/list' },
+            { title: '项目管理', path: '/admin/project/index' }
         ],
         activeTab: '/admin/index', // 默认激活的 Tab path
     }),

@@ -10,7 +10,7 @@
             <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
         </div>
 
-        <table v-else class="min-w-full table-auto">
+        <table v-else class="min-w-full overflow-x-auto  text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 table-auto">
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-4 py-2 text-left text-gray-600">标签名称</th>
@@ -19,7 +19,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="tag in tags" :key="tag.id" class="hover:bg-gray-100">
+                <tr v-for="tag in tags" :key="tag.id" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-100">
                     <td class="px-4 py-2">
                         <el-tag :key="tag" :disable-transitions="false">
                             {{ tag.name }}
