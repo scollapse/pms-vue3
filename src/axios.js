@@ -5,7 +5,12 @@ import toast from "@/composables/utils/toast";
 // Create an axios instance
 const instance = axios.create({
     baseURL: "/api",
-    timeout: 7000,
+    timeout: 15000,
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    retry: 3,
+    retryDelay: 1000,
 });
 
 // 添加请求拦截器
@@ -25,18 +30,46 @@ instance.interceptors.request.use(function (config) {
 });
 
 // 添加响应拦截器
-instance.interceptors.response.use(function (response) {
-    // 2xx 范围内的状态码都会触发该函数。
-    // 对响应数据做点什么
-    return response.data
-}, function (error) {
-    // 超出 2xx 范围的状态码都会触发该函数。
-    // 对响应错误做点什么
-    let message = error.response.data.message || '请求失败'
-    toast.show('error', message)
-    return Promise.reject(error)
-})
+instance.interceptors.response.use(undefined, async (err) => {
+    const config = err.config;
+    
+    if (config && config.retry && (err.code === 'ECONNABORTED' || err.message.includes('timeout') || err.message.includes('Network Error') || err.message.includes('ERR_INCOMPLETE_CHUNKED_ENCODING'))) {
+        config.retryCount = config.retryCount || 0;
+        
+        if (config.retryCount >= config.retry) {
+            return Promise.reject(err);
+        }
+        
+        config.retryCount += 1;
+        
+        const backoff = new Promise((resolve) => {
+            setTimeout(() => {
+                resolve();
+            }, config.retryDelay || 1000);
+        });
+        
+        await backoff;
+        return instance(config);
+    }
+    return Promise.reject(err);
+});
 
+// 添加响应拦截器处理数据格式
+instance.interceptors.response.use(
+    response => {
+        if (response && response.data) {
+            return response.data;
+        }
+        return {
+            success: false,
+            errorMessage: '响应数据格式错误'
+        };
+    },
+    error => {
+        console.error('Request failed:', error);
+        return Promise.reject(error);
+    }
+);
 
 // 暴露出去
 export default instance;

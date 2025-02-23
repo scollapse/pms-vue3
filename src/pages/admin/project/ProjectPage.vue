@@ -43,6 +43,7 @@
                     @add-task="showAddTaskDialog"
                     @edit-task="showEditTaskDialog"
                     @delete-task="handleDeleteTask"
+                    @refresh="refreshTaskList"
                 />
                 <pagination style="margin-top: 10px;" :load-data="loadTasks" :filters="taskFilters" ref="taskPagination" />
             </div>
@@ -53,6 +54,7 @@
                     @add-project="showAddProjectDialog"
                     @edit-project="showEditProjectDialog"
                     @delete-project="handleDeleteProject"
+                    @refresh="refreshProjectList"
                 />
                 <pagination style="margin-top: 10px;"  :load-data="loadProjects" :filters="projectFilters" ref="projectPagination" />
             </div>
@@ -71,9 +73,15 @@
             <div class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
                     <div class="form-item">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">任务名称</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            任务名称
+                            <span class="text-red-500">*</span>
+                        </label>
                         <input v-model="taskForm.taskName" type="text" 
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            :class="{'border-pink-500 focus:border-pink-500 focus:ring-pink-200': taskFormErrors.taskName}"
+                            placeholder="请输入任务名称">
+                        <p v-if="taskFormErrors.taskName" class="text-pink-500 text-sm mt-2">{{ taskFormErrors.taskName }}</p>
                     </div>
                     <div class="form-item">
                         <label class="block text-sm font-medium text-gray-700 mb-1">所属项目</label>
@@ -87,21 +95,27 @@
                     <div class="form-item">
                         <label class="block text-sm font-medium text-gray-700 mb-1">优先级</label>
                         <select v-model="taskForm.priority"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                            <option value="1">高</option>
-                            <option value="2">中</option>
-                            <option value="3">低</option>
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            :class="{'border-pink-500 focus:border-pink-500 focus:ring-pink-200': taskFormErrors.priority}">
+                            <option value="1">P1</option>
+                            <option value="2">P2</option>
+                            <option value="3">P3</option>
+                            <option value="4">P4</option>
                         </select>
+                        <p v-if="taskFormErrors.priority" class="text-pink-500 text-sm mt-2">{{ taskFormErrors.priority }}</p>
                     </div>
                     <div class="form-item">
                         <label class="block text-sm font-medium text-gray-700 mb-1">状态</label>
                         <select v-model="taskForm.status"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                            <option value="未开始">未开始</option>
-                            <option value="进行中">进行中</option>
-                            <option value="已完成">已完成</option>
-                            <option value="已暂停">已暂停</option>
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            :class="{'border-pink-500 focus:border-pink-500 focus:ring-pink-200': taskFormErrors.status}">
+                            <option value="backlog">待办</option>
+                            <option value="todo">待处理</option>
+                            <option value="in_progress">进行中</option>
+                            <option value="review">评审中</option>
+                            <option value="completed">已完成</option>
                         </select>
+                        <p v-if="taskFormErrors.status" class="text-pink-500 text-sm mt-2">{{ taskFormErrors.status }}</p>
                     </div>
                     <div class="form-item">
                         <label class="block text-sm font-medium text-gray-700 mb-1">预计工时</label>
@@ -118,20 +132,20 @@
                         </select>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 gap-4">
                     <div class="form-item">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">开始时间</label>
-                        <DatePicker
-                            v-model="taskForm.startTime"
-                            placeholder="选择开始时间"
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            任务周期
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <DateRangePicker
+                            v-model:startDate="taskForm.startTime"
+                            v-model:endDate="taskForm.endTime"
+                            placeholder="请选择开始和结束时间"
+                            class="mt-1 block w-full"
+                            :class="{'[&>input]:border-pink-500 [&>input]:focus:border-pink-500 [&>input]:focus:ring-pink-200': taskFormErrors.dateRange}"
                         />
-                    </div>
-                    <div class="form-item">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">截止时间</label>
-                        <DatePicker
-                            v-model="taskForm.endTime"
-                            placeholder="选择截止时间"
-                        />
+                        <p v-if="taskFormErrors.dateRange" class="text-pink-500 text-sm mt-2">{{ taskFormErrors.dateRange }}</p>
                     </div>
                 </div>
             </div>
@@ -150,59 +164,79 @@
             <div class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
                     <div class="form-item">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">项目名称</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            项目名称
+                            <span class="text-red-500">*</span>
+                        </label>
                         <input v-model="projectForm.projectName" type="text" 
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            :class="{'border-pink-500 focus:border-pink-500 focus:ring-pink-200': projectFormErrors.projectName}"
+                            placeholder="请输入项目名称">
+                        <p v-if="projectFormErrors.projectName" class="text-pink-500 text-sm mt-2">{{ projectFormErrors.projectName }}</p>
                     </div>
                     <div class="form-item">
                         <label class="block text-sm font-medium text-gray-700 mb-1">负责人</label>
                         <select v-model="projectForm.ownerId"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            placeholder="请选择负责人">
                             <option v-for="user in userOptions" :key="user.userId" :value="user.userId">
                                 {{ user.userName }}
                             </option>
                         </select>
                     </div>
                     <div class="form-item">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">优先级</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            优先级
+                            <span class="text-red-500">*</span>
+                        </label>
                         <select v-model="projectForm.priority"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                            <option value="1">高</option>
-                            <option value="2">中</option>
-                            <option value="3">低</option>
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            :class="{'border-pink-500 focus:border-pink-500 focus:ring-pink-200': projectFormErrors.priority}">
+                            <option value="1">P1</option>
+                            <option value="2">P2</option>
+                            <option value="3">P3</option>
+                            <option value="4">P4</option>
                         </select>
+                        <p v-if="projectFormErrors.priority" class="text-pink-500 text-sm mt-2">{{ projectFormErrors.priority }}</p>
                     </div>
                     <div class="form-item">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">状态</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            状态
+                            <span class="text-red-500">*</span>
+                        </label>
                         <select v-model="projectForm.status"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                            <option value="未开始">未开始</option>
-                            <option value="进行中">进行中</option>
-                            <option value="已完成">已完成</option>
-                            <option value="已暂停">已暂停</option>
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            :class="{'border-pink-500 focus:border-pink-500 focus:ring-pink-200': projectFormErrors.status}">
+                            <option value="planning">规划中</option>
+                            <option value="in_progress">进行中</option>
+                            <option value="paused">已暂停</option>
+                            <option value="completed">已完成</option>
+                            <option value="archived">已归档</option>
                         </select>
+                        <p v-if="projectFormErrors.status" class="text-pink-500 text-sm mt-2">{{ projectFormErrors.status }}</p>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 gap-4">
                     <div class="form-item">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">开始时间</label>
-                        <DatePicker
-                            v-model="projectForm.startTime"
-                            placeholder="选择开始时间"
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            项目周期
+                            <span class="text-red-500">*</span>
+                        </label>
+                        <DateRangePicker
+                            v-model:startDate="projectForm.startTime"
+                            v-model:endDate="projectForm.endTime"
+                            placeholder="请选择开始和结束时间"
+                            class="mt-1 block w-full"
+                            :class="{'[&>input]:border-pink-500 [&>input]:focus:border-pink-500 [&>input]:focus:ring-pink-200': projectFormErrors.dateRange}"
                         />
-                    </div>
-                    <div class="form-item">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">截止时间</label>
-                        <DatePicker
-                            v-model="projectForm.endTime"
-                            placeholder="选择截止时间"
-                        />
+                        <p v-if="projectFormErrors.dateRange" class="text-pink-500 text-sm mt-2">{{ projectFormErrors.dateRange }}</p>
                     </div>
                 </div>
                 <div class="form-item">
                     <label class="block text-sm font-medium text-gray-700 mb-1">项目描述</label>
                     <textarea v-model="projectForm.description" rows="3"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"></textarea>
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        placeholder="请输入项目描述"></textarea>
                 </div>
             </div>
         </ModalForm>
@@ -210,7 +244,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import TaskList from './TaskList.vue'
 import ProjectList from './ProjectList.vue'
 import ModalForm from '@/components/ModalForm.vue'
@@ -219,7 +253,7 @@ import { fetchTasks, addTask, updateTask, deleteTask } from '@/api/admin/task'
 import { fetchProjects, addProject, updateProject, deleteProject } from '@/api/admin/project'
 import toast from '@/composables/utils/toast'
 import modal from '@/composables/utils/modal'
-import DatePicker from '@/components/DatePicker.vue'
+import DateRangePicker from '@/components/DateRangePicker.vue'
 
 const activeTab = ref('task')
 const tasks = ref([])
@@ -244,8 +278,8 @@ const taskForm = ref({
     taskName: '',
     projectId: '',
     ownerId: '',
-    status: '未开始',
-    priority: '2',
+    status: 'planning',
+    priority: '4',
     estimateHours: 0,
     startTime: null,
     endTime: null
@@ -254,8 +288,8 @@ const taskForm = ref({
 const projectForm = ref({
     projectName: '',
     ownerId: '',
-    status: '未开始',
-    priority: '2',
+    status: 'planning',
+    priority: '4',
     description: '',
     startTime: null,
     endTime: null
@@ -268,6 +302,22 @@ const userOptions = ref([
 ])
 
 const projectOptions = ref([])
+
+// 添加表单错误状态
+const projectFormErrors = ref({
+    projectName: '',
+    priority: '',
+    status: '',
+    dateRange: ''
+})
+
+// 添加任务表单错误状态
+const taskFormErrors = ref({
+    taskName: '',
+    priority: '',
+    status: '',
+    dateRange: ''
+})
 
 // 加载数据方法
 const loadTasks = async (currentPage, pageSize, filters, setTotal) => {
@@ -298,6 +348,7 @@ const loadProjects = async (currentPage, pageSize, filters, setTotal) => {
             size: pageSize,
             ...filters
         })
+        console.log("res:" + res)
         if (res.success) {
             projects.value = res.data
             setTotal(res.total)
@@ -332,6 +383,41 @@ const showEditTaskDialog = async (taskId) => {
 }
 
 const handleTaskSubmit = async () => {
+    // 重置错误信息
+    taskFormErrors.value = {
+        taskName: '',
+        priority: '',
+        status: '',
+        dateRange: ''
+    }
+    
+    // 表单验证
+    let isValid = true
+    
+    if (!taskForm.value.taskName?.trim()) {
+        taskFormErrors.value.taskName = '请输入任务名称'
+        isValid = false
+    }
+    
+    if (!taskForm.value.priority) {
+        taskFormErrors.value.priority = '请选择优先级'
+        isValid = false
+    }
+    
+    if (!taskForm.value.status) {
+        taskFormErrors.value.status = '请选择状态'
+        isValid = false
+    }
+    
+    if (!taskForm.value.startTime || !taskForm.value.endTime) {
+        taskFormErrors.value.dateRange = '请选择任务周期'
+        isValid = false
+    }
+    
+    if (!isValid) {
+        return
+    }
+
     isConfirmLoading.value = true
     try {
         const api = taskFormMode.value === 'add' ? addTask : updateTask
@@ -341,7 +427,7 @@ const handleTaskSubmit = async () => {
             taskModal.value.closeModal()
             refreshTaskList()
         } else {
-            toast.show('error', res.errorMessage)
+            toast.show('error', res.errorMessage || '操作失败')
         }
     } catch (error) {
         console.error('Failed to submit task:', error)
@@ -386,6 +472,41 @@ const showEditProjectDialog = async (projectId) => {
 }
 
 const handleProjectSubmit = async () => {
+    // 重置错误信息
+    projectFormErrors.value = {
+        projectName: '',
+        priority: '',
+        status: '',
+        dateRange: ''
+    }
+    
+    // 表单验证
+    let isValid = true
+    
+    if (!projectForm.value.projectName?.trim()) {
+        projectFormErrors.value.projectName = '请输入项目名称'
+        isValid = false
+    }
+    
+    if (!projectForm.value.priority) {
+        projectFormErrors.value.priority = '请选择优先级'
+        isValid = false
+    }
+    
+    if (!projectForm.value.status) {
+        projectFormErrors.value.status = '请选择状态'
+        isValid = false
+    }
+    
+    if (!projectForm.value.startTime || !projectForm.value.endTime) {
+        projectFormErrors.value.dateRange = '请选择项目周期'
+        isValid = false
+    }
+    
+    if (!isValid) {
+        return
+    }
+
     isConfirmLoading.value = true
     try {
         const api = projectFormMode.value === 'add' ? addProject : updateProject
@@ -395,7 +516,7 @@ const handleProjectSubmit = async () => {
             projectModal.value.closeModal()
             refreshProjectList()
         } else {
-            toast.show('error', res.errorMessage)
+            toast.show('error', res.errorMessage || '操作失败')
         }
     } catch (error) {
         console.error('Failed to submit project:', error)
@@ -413,7 +534,7 @@ const handleDeleteProject = (projectId) => {
                 toast.show('success', '删除项目成功')
                 refreshProjectList()
             } else {
-                toast.show('error', res.errorMessage)
+                toast.show('error', res.errorMessage || '删除失败')
             }
         } catch (error) {
             console.error('Failed to delete project:', error)
@@ -441,11 +562,17 @@ const clearTaskForm = () => {
         taskName: '',
         projectId: '',
         ownerId: '',
-        status: '未开始',
-        priority: '2',
+        status: 'planning',
+        priority: '4',
         estimateHours: 0,
         startTime: null,
         endTime: null
+    }
+    taskFormErrors.value = {
+        taskName: '',
+        priority: '',
+        status: '',
+        dateRange: ''
     }
 }
 
@@ -453,11 +580,97 @@ const clearProjectForm = () => {
     projectForm.value = {
         projectName: '',
         ownerId: '',
-        status: '未开始',
-        priority: '2',
+        status: 'planning',
+        priority: '4',
         description: '',
         startTime: null,
         endTime: null
     }
+    projectFormErrors.value = {
+        projectName: '',
+        priority: '',
+        status: '',
+        dateRange: ''
+    }
 }
+
+// 监听表单字段变化，清除对应错误提示
+watch(() => projectForm.value.projectName, () => {
+    projectFormErrors.value.projectName = ''
+})
+
+watch(() => projectForm.value.priority, () => {
+    projectFormErrors.value.priority = ''
+})
+
+watch(() => projectForm.value.status, () => {
+    projectFormErrors.value.status = ''
+})
+
+// 监听日期范围变化
+watch([
+    () => projectForm.value.startTime,
+    () => projectForm.value.endTime
+], () => {
+    projectFormErrors.value.dateRange = ''
+})
+
+// 添加表单字段监听，清除对应错误提示
+watch(() => taskForm.value.taskName, () => {
+    taskFormErrors.value.taskName = ''
+})
+
+watch(() => taskForm.value.priority, () => {
+    taskFormErrors.value.priority = ''
+})
+
+watch(() => taskForm.value.status, () => {
+    taskFormErrors.value.status = ''
+})
+
+watch([
+    () => taskForm.value.startTime,
+    () => taskForm.value.endTime
+], () => {
+    taskFormErrors.value.dateRange = ''
+})
+
+// 初始化加载数据
+onMounted(async () => {
+    // 加载项目列表
+    if (projectPagination.value) {
+        await projectPagination.value.refresh()
+    }
+    
+    // 加载任务列表
+    if (taskPagination.value) {
+        await taskPagination.value.refresh()
+    }
+    
+    // 加载项目选项（用于任务表单中选择所属项目）
+    try {
+        const res = await fetchProjects({
+            current: 1,
+            size: 999  // 获取所有项目作为选项
+        })
+        if (res.success) {
+            projectOptions.value = res.data.map(p => ({
+                projectId: p.projectId,
+                projectName: p.projectName
+            }))
+        }
+    } catch (error) {
+        console.error('Failed to fetch project options:', error)
+        toast.show('error', '加载项目选项失败')
+    }
+})
+
+// 当切换 tab 时刷新对应列表
+watch(() => activeTab.value, (newTab) => {
+    if (newTab === 'project' && projectPagination.value) {
+        projectPagination.value.refresh()
+    } else if (newTab === 'task' && taskPagination.value) {
+        taskPagination.value.refresh()
+    }
+})
 </script>

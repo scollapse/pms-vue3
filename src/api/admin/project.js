@@ -2,7 +2,7 @@ import axios from "@/axios";
 
 // 获取项目列表
 export function fetchProjects(data) {
-    return axios.get("/interface/admin/project/list", 
+    return axios.post("/interface/admin/project/list", 
         data
     );
 }
@@ -24,6 +24,13 @@ export function updateProject(data) {
 // 删除项目
 export function deleteProject(data) {
     return axios.post("/interface/admin/project/delete", 
+        data
+    );
+}
+
+// 添加完成项目的接口
+export function finishProject(data) {
+    return axios.post("/interface/admin/project/finish", 
         data
     );
 } 

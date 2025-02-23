@@ -27,18 +27,49 @@
                     <td class="px-4 py-2">{{ project.projectName }}</td>
                     <td class="px-4 py-2">{{ project.ownerName }}</td>
                     <td class="px-4 py-2">
-                        <el-tag :type="getStatusType(project.status)">{{ project.status }}</el-tag>
+                        <el-tag :type="getStatusType(project.status)">{{ getStatusLabel(project.status) }}</el-tag>
                     </td>
                     <td class="px-4 py-2">
-                        <el-tag :type="getPriorityType(project.priority)">{{ getPriorityLabel(project.priority) }}</el-tag>
+                        <span :class="[
+                            'px-2 py-1 rounded-md text-xs font-medium',
+                            getPriorityType(project.priority)
+                        ]">
+                            {{ getPriorityLabel(project.priority) }}
+                        </span>
                     </td>
                     <td class="px-4 py-2">{{ formatDate(project.startTime) }}</td>
                     <td class="px-4 py-2">{{ formatDate(project.endTime) }}</td>
-                    <td class="px-4 py-2 space-x-2">
-                        <button @click="$emit('edit-project', project.projectId)"
-                            class="px-2 py-1 text-white bg-blue-500 rounded hover:bg-blue-600">编辑</button>
-                        <button @click="$emit('delete-project', project.projectId)"
-                            class="px-2 py-1 text-white bg-red-500 rounded hover:bg-red-600">删除</button>
+                    <td class="px-4 py-2">
+                        <div class="flex items-center gap-2">
+                            <!-- 编辑按钮 -->
+                            <button @click="$emit('edit-project', project.projectId)"
+                                class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 focus:ring-4 focus:ring-blue-100">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                                编辑
+                            </button>
+                            
+                            <!-- 完成按钮 -->
+                            <button 
+                                v-if="project.status !== 'completed'"
+                                @click="handleFinishProject(project.projectId)"
+                                class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-green-700 bg-green-100 rounded-lg hover:bg-green-200 focus:ring-4 focus:ring-green-100">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                完成
+                            </button>
+
+                            <!-- 删除按钮 -->
+                            <button @click="$emit('delete-project', project.projectId)"
+                                class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-red-700 bg-red-100 rounded-lg hover:bg-red-200 focus:ring-4 focus:ring-red-100">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                                删除
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 <tr v-if="projects.length === 0">
@@ -51,6 +82,9 @@
 
 <script setup>
 import { defineProps, defineEmits } from 'vue'
+import modal from '@/composables/utils/modal'
+import toast from '@/composables/utils/toast'
+import { finishProject } from '@/api/admin/project'
 
 const props = defineProps({
     projects: {
@@ -63,36 +97,77 @@ const props = defineProps({
     },
 })
 
+const emit = defineEmits(['edit-project', 'delete-project', 'refresh'])
+
 const getStatusType = (status) => {
     const types = {
-        '未开始': 'info',
-        '进行中': 'warning',
-        '已完成': 'success',
-        '已暂停': 'danger'
+        'planning': 'info',
+        'in_progress': 'warning',
+        'paused': 'danger',
+        'completed': 'success',
+        'archived': 'info'
     }
     return types[status] || 'info'
 }
 
 const getPriorityType = (priority) => {
     const types = {
-        1: 'danger',
-        2: 'warning',
-        3: 'info'
+        1: 'bg-red-100 text-red-800',     // P1 - 红色
+        2: 'bg-yellow-100 text-yellow-800', // P2 - 黄色
+        3: 'bg-green-100 text-green-800',   // P3 - 绿色
+        4: 'bg-blue-100 text-blue-800'      // P4 - 蓝色
     }
-    return types[priority] || 'info'
+    return types[priority] || 'bg-gray-100 text-gray-800'
 }
 
 const getPriorityLabel = (priority) => {
     const labels = {
-        1: '高',
-        2: '中',
-        3: '低'
+        1: 'P1',
+        2: 'P2',
+        3: 'P3',
+        4: 'P4'
     }
     return labels[priority] || '未知'
 }
 
+const getStatusLabel = (status) => {
+    const labels = {
+        'planning': '规划中',
+        'in_progress': '进行中',
+        'paused': '已暂停',
+        'completed': '已完成',
+        'archived': '已归档'
+    }
+    return labels[status] || status
+}
+
 const formatDate = (date) => {
     if (!date) return '未设置'
-    return new Date(date).toLocaleDateString()
+    const d = new Date(date)
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    const hours = String(d.getHours()).padStart(2, '0')
+    const minutes = String(d.getMinutes()).padStart(2, '0')
+    const seconds = String(d.getSeconds()).padStart(2, '0')
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
+
+// 添加完成项目的处理方法
+const handleFinishProject = (projectId) => {
+    modal.showConfirm('确定要完成该项目吗？', async () => {
+        try {
+            const res = await finishProject({ projectId })
+            if (res.success) {
+                toast.show('success', '项目已完成')
+                emit('refresh')  // 刷新列表
+            } else {
+                toast.show('error', res.errorMessage || '操作失败')
+            }
+        } catch (error) {
+            console.error('Failed to finish project:', error)
+            toast.show('error', '操作失败')
+        }
+    })
 }
 </script>

@@ -41,7 +41,9 @@
         const self = this;
         this.flatpickrInstance = flatpickr(this.$refs.dateInput, {
           locale: Mandarin,
-          dateFormat: "Y-m-d",
+          dateFormat: "Y-m-d H:i:s",
+          enableTime: true,
+          time_24hr: true,
           defaultDate: this.modelValue || null,
           minDate: this.minDate,
           maxDate: this.maxDate,
@@ -49,7 +51,11 @@
           disableMobile: true,
           allowInput: true,
           onChange: (selectedDates) => {
-            const date = selectedDates[0] ? selectedDates[0].toISOString().split('T')[0] : "";
+            if (!selectedDates[0]) {
+              this.$emit("update:modelValue", "");
+              return;
+            }
+            const date = this.formatDate(selectedDates[0]);
             this.$emit("update:modelValue", date);
           },
           onReady: function(selectedDates, dateStr, instance) {
@@ -78,12 +84,23 @@
           }
         });
       },
+      // 新增方法：格式化日期
+      formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+      },
       // 新增方法：设置为今天
       setToday() {
         if (!this.disabled) {
           const today = new Date();
           this.flatpickrInstance.setDate(today);
-          this.$emit("update:modelValue", today.toISOString().split('T')[0]);
+          this.$emit("update:modelValue", this.formatDate(today));
+          this.flatpickrInstance.close();
         }
       },
       // 新增方法：清除日期
@@ -91,6 +108,7 @@
         if (!this.disabled) {
           this.flatpickrInstance.clear();
           this.$emit("update:modelValue", "");
+          this.flatpickrInstance.close();
         }
       }
     },

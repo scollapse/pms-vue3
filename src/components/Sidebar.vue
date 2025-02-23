@@ -13,10 +13,10 @@
                 <span v-if="!collapsed">Rabbit PMS</span>
             </a>
         </div>
-        <nav class="bg-purple-100 ">
+        <nav class="bg-purple-100">
             <ul>
                 <li v-for="(item, index) in menuItems" :key="item.name" :class="[
-                    ' bg-white',
+                    'bg-white',
                     {
                         'rounded-tr-[40px]': index > 0 && menuItems[index - 1].selected,
                         'rounded-br-[40px]': index < menuItems.length - 1 && menuItems[index + 1].selected
@@ -24,9 +24,10 @@
                     { 'pl-7': !collapsed }
                 ]">
                     <a @click="navigateTo(item.link)" :class="[
-                        'hover:bg-purple-100 last:border-0 hover:rounded-l-[40px] block px-12 py-5 transition flex items-center',
+                        'rounded-l-[40px] block px-12 py-5 transition flex items-center',
                         {
-                            'bg-purple-100 text-gray-800 rounded-l-[40px]': item.selected
+                            'bg-purple-100 text-gray-800': item.selected,
+                            'hover:bg-purple-100': !item.selected
                         }
                     ]">
                         <i :class="item.icon" class="mr-3 text-lg"></i>

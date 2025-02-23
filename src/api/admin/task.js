@@ -3,7 +3,7 @@ import axios from "@/axios";
 // 获取任务列表
 export function fetchTasks(data) {
 
-    return axios.get("/interface/admin/task/list", 
+    return axios.post("/interface/admin/task/list", 
         data
     );
 }
@@ -25,6 +25,13 @@ export function updateTask  (data) {
 // 删除任务
 export function deleteTask (data)  {
     return axios.post("/interface/admin/task/delete", 
+        data
+    );
+}
+
+// 添加完成任务的接口
+export function finishTask(data) {
+    return axios.post("/interface/admin/task/finish", 
         data
     );
 } 
