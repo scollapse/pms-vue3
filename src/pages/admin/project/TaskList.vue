@@ -105,11 +105,11 @@ const emit = defineEmits(['edit-task', 'delete-task', 'refresh'])
 
 const getStatusType = (status) => {
     const types = {
-        'planning': 'info',
+        'backlog': 'info',
+        'todo': 'info',
         'in_progress': 'warning',
-        'paused': 'danger',
-        'completed': 'success',
-        'archived': 'info'
+        'review': 'danger',
+        'completed': 'success'
     }
     return types[status] || 'info'
 }
@@ -136,11 +136,11 @@ const getPriorityLabel = (priority) => {
 
 const getStatusLabel = (status) => {
     const labels = {
-        'planning': '规划中',
+        'backlog': '待办',
+        'todo': '待处理',
         'in_progress': '进行中',
-        'paused': '已暂停',
-        'completed': '已完成',
-        'archived': '已归档'
+        'review': '评审中',
+        'completed': '已完成'
     }
     return labels[status] || status
 }
