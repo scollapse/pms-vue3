@@ -13,8 +13,10 @@ declare module 'vue' {
     ElButton: typeof import('element-plus/es')['ElButton']
     ElConfigProvider: typeof import('element-plus/es')['ElConfigProvider']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
+    ElDialog: typeof import('element-plus/es')['ElDialog']
     ElInput: typeof import('element-plus/es')['ElInput']
     ElInputNumber: typeof import('element-plus/es')['ElInputNumber']
+    ElInputTag: typeof import('element-plus/es')['ElInputTag']
     ElOption: typeof import('element-plus/es')['ElOption']
     ElSelect: typeof import('element-plus/es')['ElSelect']
     ElTag: typeof import('element-plus/es')['ElTag']
@@ -27,6 +29,7 @@ declare module 'vue' {
     SearchBar: typeof import('./src/components/SearchBar.vue')['default']
     Sidebar: typeof import('./src/components/Sidebar.vue')['default']
     TabList: typeof import('./src/components/TabList.vue')['default']
+    TagInput: typeof import('./src/components/TagInput.vue')['default']
     TimePicker: typeof import('./src/components/TimePicker.vue')['default']
   }
 }

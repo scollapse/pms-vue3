@@ -14,18 +14,17 @@
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-4 py-2 text-left text-gray-600">项目名称</th>
-                    <th class="px-4 py-2 text-left text-gray-600">负责人</th>
                     <th class="px-4 py-2 text-left text-gray-600">状态</th>
                     <th class="px-4 py-2 text-left text-gray-600">优先级</th>
                     <th class="px-4 py-2 text-left text-gray-600">开始时间</th>
                     <th class="px-4 py-2 text-left text-gray-600">截止时间</th>
+                    <th class="px-4 py-2 text-left text-gray-600">完成时间</th>
                     <th class="px-4 py-2 text-left text-gray-600">操作</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="project in projects" :key="project.projectId" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-100">
                     <td class="px-4 py-2">{{ project.projectName }}</td>
-                    <td class="px-4 py-2">{{ project.ownerName }}</td>
                     <td class="px-4 py-2">
                         <el-tag :type="getStatusType(project.status)">{{ getStatusLabel(project.status) }}</el-tag>
                     </td>
@@ -39,10 +38,12 @@
                     </td>
                     <td class="px-4 py-2">{{ formatDate(project.startTime) }}</td>
                     <td class="px-4 py-2">{{ formatDate(project.endTime) }}</td>
+                    <td class="px-4 py-2">{{ formatDate(project.completionTime) }}</td>
                     <td class="px-4 py-2">
                         <div class="flex items-center gap-2">
                             <!-- 编辑按钮 -->
-                            <button @click="$emit('edit-project', project.projectId)"
+                            <button v-if="['planning', 'in_progress', 'paused'].includes(project.status)"
+                                @click="$emit('edit-project', project.projectId)"
                                 class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 focus:ring-4 focus:ring-blue-100">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -50,17 +51,47 @@
                                 编辑
                             </button>
                             
-                            <!-- 完成按钮 -->
-                            <button 
-                                v-if="project.status !== 'completed'"
-                                @click="handleFinishProject(project.projectId)"
+                            <!-- 开始按钮：planning或paused状态时显示 -->
+                            <button v-if="['planning', 'paused'].includes(project.status)"
+                                @click="handleStartProject(project)"
+                                class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-green-700 bg-green-100 rounded-lg hover:bg-green-200 focus:ring-4 focus:ring-green-100">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                开始
+                            </button>
+                            
+                            <!-- 暂停按钮：进行中状态时显示 -->
+                            <button v-if="project.status === 'in_progress'"
+                                @click="handlePauseProject(project)"
+                                class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-yellow-700 bg-yellow-100 rounded-lg hover:bg-yellow-200 focus:ring-4 focus:ring-yellow-100">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                暂停
+                            </button>
+                            
+                            <!-- 完成按钮：进行中状态时显示 -->
+                            <button v-if="project.status === 'in_progress'"
+                                @click="handleFinishProject(project)"
                                 class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-green-700 bg-green-100 rounded-lg hover:bg-green-200 focus:ring-4 focus:ring-green-100">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
                                 完成
                             </button>
-
+                            
+                            <!-- 废弃按钮：planning或in_progress状态时显示 -->
+                            <button v-if="['planning', 'in_progress'].includes(project.status)"
+                                @click="handleDeprecateProject(project)"
+                                class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 focus:ring-4 focus:ring-gray-100">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                废弃
+                            </button>
+                            
                             <!-- 删除按钮 -->
                             <button @click="$emit('delete-project', project.projectId)"
                                 class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-red-700 bg-red-100 rounded-lg hover:bg-red-200 focus:ring-4 focus:ring-red-100">
@@ -73,7 +104,7 @@
                     </td>
                 </tr>
                 <tr v-if="projects.length === 0">
-                    <td colspan="7" class="px-4 py-2 text-center text-gray-500">暂无数据</td>
+                    <td colspan="8" class="px-4 py-2 text-center text-gray-500">暂无数据</td>
                 </tr>
             </tbody>
         </table>
@@ -82,9 +113,9 @@
 
 <script setup>
 import { defineProps, defineEmits } from 'vue'
-import modal from '@/composables/utils/modal'
+import { updateProject } from '@/api/admin/project'
 import toast from '@/composables/utils/toast'
-import { finishProject } from '@/api/admin/project'
+import modal from '@/composables/utils/modal'
 
 const props = defineProps({
     projects: {
@@ -97,17 +128,28 @@ const props = defineProps({
     },
 })
 
-const emit = defineEmits(['edit-project', 'delete-project', 'refresh'])
+const emit = defineEmits(['add-project', 'edit-project', 'delete-project', 'refresh'])
 
 const getStatusType = (status) => {
     const types = {
         'planning': 'info',
         'in_progress': 'warning',
-        'paused': 'danger',
         'completed': 'success',
-        'archived': 'info'
+        'paused': 'default',
+        'deprecated': 'danger'
     }
     return types[status] || 'info'
+}
+
+const getStatusLabel = (status) => {
+    const labels = {
+        'planning': '规划中',
+        'in_progress': '进行中',
+        'completed': '已完成',
+        'paused': '已暂停',
+        'deprecated': '已废弃'
+    }
+    return labels[status] || status
 }
 
 const getPriorityType = (priority) => {
@@ -130,19 +172,8 @@ const getPriorityLabel = (priority) => {
     return labels[priority] || '未知'
 }
 
-const getStatusLabel = (status) => {
-    const labels = {
-        'planning': '规划中',
-        'in_progress': '进行中',
-        'paused': '已暂停',
-        'completed': '已完成',
-        'archived': '已归档'
-    }
-    return labels[status] || status
-}
-
 const formatDate = (date) => {
-    if (!date) return '未设置'
+    if (!date) return '未完成'
     const d = new Date(date)
     const year = d.getFullYear()
     const month = String(d.getMonth() + 1).padStart(2, '0')
@@ -153,19 +184,85 @@ const formatDate = (date) => {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
 }
 
-// 添加完成项目的处理方法
-const handleFinishProject = (projectId) => {
+// 开始项目
+const handleStartProject = (project) => {
+    modal.showConfirm('确定要开始该项目吗？', async () => {
+        try {
+            const res = await updateProject({
+                projectId: project.projectId,
+                status: 'in_progress'
+            })
+            if (res.success) {
+                toast.show('success', '项目已开始')
+                emit('refresh')
+            } else {
+                toast.show('error', res.errorMessage || '操作失败')
+            }
+        } catch (error) {
+            console.error('Failed to start project:', error)
+            toast.show('error', '操作失败')
+        }
+    })
+}
+
+// 暂停项目
+const handlePauseProject = (project) => {
+    modal.showConfirm('确定要暂停该项目吗？', async () => {
+        try {
+            const res = await updateProject({
+                projectId: project.projectId,
+                status: 'paused'
+            })
+            if (res.success) {
+                toast.show('success', '项目已暂停')
+                emit('refresh')
+            } else {
+                toast.show('error', res.errorMessage || '操作失败')
+            }
+        } catch (error) {
+            console.error('Failed to pause project:', error)
+            toast.show('error', '操作失败')
+        }
+    })
+}
+
+// 完成项目
+const handleFinishProject = (project) => {
     modal.showConfirm('确定要完成该项目吗？', async () => {
         try {
-            const res = await finishProject({ projectId })
+            const res = await updateProject({
+                projectId: project.projectId,
+                status: 'completed'
+            })
             if (res.success) {
                 toast.show('success', '项目已完成')
-                emit('refresh')  // 刷新列表
+                emit('refresh')
             } else {
                 toast.show('error', res.errorMessage || '操作失败')
             }
         } catch (error) {
             console.error('Failed to finish project:', error)
+            toast.show('error', '操作失败')
+        }
+    })
+}
+
+// 废弃项目
+const handleDeprecateProject = (project) => {
+    modal.showConfirm('确定要废弃该项目吗？', async () => {
+        try {
+            const res = await updateProject({
+                projectId: project.projectId,
+                status: 'deprecated'
+            })
+            if (res.success) {
+                toast.show('success', '项目已废弃')
+                emit('refresh')
+            } else {
+                toast.show('error', res.errorMessage || '操作失败')
+            }
+        } catch (error) {
+            console.error('Failed to deprecate project:', error)
             toast.show('error', '操作失败')
         }
     })

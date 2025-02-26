@@ -3,7 +3,7 @@
     <input
       type="text"
       ref="dateInput"
-      class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+      class="form-input"
       :placeholder="placeholder"
     />
     <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">

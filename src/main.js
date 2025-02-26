@@ -8,6 +8,7 @@ import '@/assets/main.css'      // 引入 main.css 样式文件
 import 'animate.css'; // 引入 animate.css 动画库
 import 'nprogress/nprogress.css' // 引入 nprogress.css 样式文件
 import '@fortawesome/fontawesome-free/css/all.css';//引入 font-awesome 图标库
+import '@/assets/styles/form.css'
 
 const app = createApp(App)
 app.use(router) // 注册路由

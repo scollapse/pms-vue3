@@ -9,3 +9,10 @@ body {
   background: #f4f4f4;
   line-height: 1.6;
 }
+
+@layer utilities {
+    /* // 表单 通用 样式 */
+  .form-input{
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500;
+  }
+}
