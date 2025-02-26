@@ -6,42 +6,48 @@
             :class="{'border-gray-300': !isFocused, 'border-purple-500': isFocused}"
             @click="handleContainerClick"
         >
-            <!-- 已选标签 -->
-            <el-tag
-                v-for="tag in modelValue"
-                :key="tag"
-                closable
-                class="!m-1"
-                @close="removeTag(tag)"
-            >
-                {{ tag }}
-            </el-tag>
+            <div class="relative flex-1">
+                <div class="flex flex-wrap items-center gap-2 absolute left-0 top-1/2 transform -translate-y-1/2 pl-2">
+                    <!-- 已选标签 -->
+                    <el-tag
+                        v-for="tag in modelValue"
+                        :key="tag"
+                        closable
+                        class="!m-1"
+                        @close="removeTag(tag)"
+                    >
+                        {{ tag }}
+                    </el-tag>
+                </div>
+                <!-- 输入框 -->
+                <input
+                    ref="inputRef"
+                    v-model="inputValue"
+                    type="text"
+                    class="form-input w-full pl-2"
+                    :style="{ paddingLeft: modelValue.length ? '8rem' : '0.5rem' }"
+                    :placeholder="modelValue.length ? '' : '请输入标签并按回车键确认'"
+                    @focus="handleFocus"
+                    @blur="handleBlur"
+                    @keydown.enter.prevent="handleEnter"
+                >
 
-            <!-- 输入框 -->
-            <input
-                ref="inputRef"
-                v-model="inputValue"
-                type="text"
-                class="form-input"
-                :placeholder="modelValue.length ? '' : '请输入标签并按回车键确认'"
-                @focus="handleFocus"
-                @blur="handleBlur"
-                @keydown.enter.prevent="handleEnter"
-            >
-
-            <!-- 清空按钮 -->
+                            <!-- 清空按钮 -->
             <div 
                 v-if="modelValue.length"
-                class="flex items-center justify-center w-5 h-5 rounded-full hover:bg-gray-100 cursor-pointer"
+                class="flex items-center justify-center w-5 h-5 rounded-full hover:bg-gray-100 cursor-pointer absolute right-2 top-1/2 transform -translate-y-1/2"
                 @click.stop="clearTags"
             >
                 <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </div>
+            </div>
+
+
         </div>
 
-        <!-- 标签下拉列表 -->
+            <!-- 标签下拉列表 -->
         <div 
             v-show="showDropdown && filteredTags.length"
             class="absolute z-50 w-full mt-1 bg-white border rounded-md shadow-lg max-h-[200px] overflow-y-auto"
@@ -154,4 +160,4 @@ const clearTags = () => {
 
 // 初始化加载标签列表
 loadTags()
-</script> 
+</script>

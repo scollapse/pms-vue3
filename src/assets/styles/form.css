@@ -33,14 +33,16 @@
 
 /* 下拉选择框 */
 .form-select {
-  @apply w-full px-3 py-2 border border-gray-300 rounded-md 
-  focus:outline-none focus:ring-1 focus:ring-blue-500;
+  @apply w-full px-4 py-2 border border-gray-200 rounded-lg shadow-sm bg-white
+  focus:ring-2 focus:ring-violet-200 focus:border-violet-300
+  hover:border-violet-200 transition-colors duration-200;
 }
 
 /* 文本域 */
 .form-textarea {
-  @apply w-full px-3 py-2 border border-gray-300 rounded-md 
-  focus:outline-none focus:ring-1 focus:ring-blue-500;
+  @apply w-full px-4 py-2 border border-gray-200 rounded-lg shadow-sm bg-white
+  focus:ring-2 focus:ring-violet-200 focus:border-violet-300
+  hover:border-violet-200 transition-colors duration-200;
 }
 
 /* 表单网格布局 */
@@ -54,4 +56,4 @@
 
 .form-grid-1 {
   @apply grid-cols-1;
-} 
+}
