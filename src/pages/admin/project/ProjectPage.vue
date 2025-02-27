@@ -101,7 +101,7 @@
                     <label class="form-label">标签</label>
                     <TagInput
                         v-model="taskForm.tags"
-                        :max-tags="5"
+                        :max-tags="3"
                     />
                 </div>
             </div>
@@ -201,7 +201,7 @@ const taskForm = ref({
     estimateHours: 0,
     startTime: null,
     endTime: null,
-    tags: []  // 标签数组
+    tags: []  // 标签数组，格式：[{id: number, name: string}]
 })
 
 const projectForm = ref({
@@ -314,6 +314,7 @@ const showEditTaskDialog = async (taskId) => {
 }
 
 const handleTaskSubmit = async () => {
+    console.log('handleTaskSubmit')
     // 重置错误信息
     taskFormErrors.value = {
         taskName: '',
