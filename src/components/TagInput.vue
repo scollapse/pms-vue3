@@ -24,8 +24,9 @@
                     ref="inputRef"
                     v-model="inputValue"
                     type="text"
-                    class="form-input w-full pl-2"
-                    :style="{ paddingLeft: `${tagsContainerWidth}px` }"
+                    class="form-input w-full"
+                    :class="{ 'pl-2': !modelValue.length }"
+                    :style="modelValue.length ? { paddingLeft: `${tagsContainerWidth}px` } : {}"
                     :placeholder="modelValue.length ? '' : '请输入标签并按回车键确认'"
                     @focus="handleFocus"
                     @blur="handleBlur"
@@ -47,7 +48,7 @@
 
         <!-- 标签下拉列表 -->
         <div 
-            v-show="showDropdown && filteredTags.length"
+            v-show="showDropdown && filteredTags.length && modelValue.length < maxTags"
             class="absolute z-50 w-full mt-1 bg-white border rounded-md shadow-lg max-h-[200px] overflow-y-auto"
         >
             <div class="p-2 flex flex-wrap gap-2">
@@ -62,11 +63,16 @@
                 </el-tag>
             </div>
         </div>
+
+        <!-- 错误提示 -->
+        <div v-if="modelValue.length >= maxTags" class="text-pink-500 text-sm mt-2">
+            标签数量已达到上限 {{ maxTags }} 个
+        </div>
     </div>
 </template>
 
 <script setup>
-import { ref, computed, watch, nextTick } from 'vue'
+import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import { fetchTags } from '@/api/admin/tag'
 import toast from '@/composables/utils/toast'
 
@@ -145,13 +151,20 @@ const handleEnter = () => {
         if (existingTag) {
             if (!props.modelValue.some(t => t.id === existingTag.id)) {
                 emit('update:modelValue', [...props.modelValue, existingTag])
+            } else {
+                toast.error('该标签已存在，请勿重复添加')
             }
         } else {
-            // 如果是新标签，创建一个临时对象
-            const newTag = {
-                name: tagName,
+            // 检查新标签名称是否与已选标签重复
+            if (props.modelValue.some(t => t.name.toLowerCase() === tagName.toLowerCase())) {
+                toast.error('该标签已存在，请勿重复添加')
+            } else {
+                // 如果是新标签，创建一个临时对象
+                const newTag = {
+                    name: tagName,
+                }
+                emit('update:modelValue', [...props.modelValue, newTag])
             }
-            emit('update:modelValue', [...props.modelValue, newTag])
         }
     }
     inputValue.value = ''
@@ -163,14 +176,15 @@ const selectTag = (tag) => {
         toast.error(`标签数量已达到上限 ${props.maxTags} 个`)
         return
     }
-    if (!props.modelValue.some(t => t.id === tag.id)) {
-        emit('update:modelValue', [...props.modelValue, tag])
+    if (props.modelValue.some(t => t.id === tag.id)) {
+        toast.error('该标签已存在，请勿重复添加')
+        return
     }
+    emit('update:modelValue', [...props.modelValue, tag])
 }
-
 // 移除标签
 const removeTag = (tag) => {
-    emit('update:modelValue', props.modelValue.filter(t => t.id !== tag.id))
+    emit('update:modelValue', props.modelValue.filter(t => t.name !== tag.name))
 }
 
 // 清空标签
@@ -183,12 +197,37 @@ loadTags()
 
 const tagsContainer = ref(null)
 const tagsContainerWidth = ref(0)
+const observer = ref(null)
 
-// 监听标签列表变化
-watch(() => props.modelValue, async () => {
-    await nextTick()
+// 更新容器宽度的函数
+const updateContainerWidth = () => {
     if (tagsContainer.value) {
         tagsContainerWidth.value = tagsContainer.value.offsetWidth + 8 // 加8px作为缓冲
     }
-}, { immediate: true })
+}
+
+// 组件挂载时设置MutationObserver
+onMounted(() => {
+    nextTick(() => {
+        if (tagsContainer.value) {
+            observer.value = new MutationObserver(updateContainerWidth)
+            observer.value.observe(tagsContainer.value, {
+                childList: true,
+                subtree: true,
+                characterData: true,
+                attributes: true
+            })
+            // 初始化宽度
+            updateContainerWidth()
+        }
+    })
+})
+
+// 组件卸载时清理MutationObserver
+onUnmounted(() => {
+    if (observer.value) {
+        observer.value.disconnect()
+        observer.value = null
+    }
+})
 </script>

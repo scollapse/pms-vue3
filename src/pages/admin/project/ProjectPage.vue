@@ -335,16 +335,6 @@ const handleTaskSubmit = async () => {
         isValid = false
     }
     
-    
-    if (!taskForm.value.status) {
-        taskFormErrors.value.status = '请选择状态'
-        isValid = false
-    }
-
-    if (!taskForm.value.status) {
-        taskFormErrors.value.status = '请选择状态'
-        isValid = false
-    }
 
     if (!taskForm.value.startTime || !taskForm.value.endTime) {
         taskFormErrors.value.dateRange = '请选择任务周期'
@@ -429,16 +419,6 @@ const handleProjectSubmit = async () => {
         isValid = false
     }
     
-    
-    if (!projectForm.value.status) {
-        projectFormErrors.value.status = '请选择状态'
-        isValid = false
-    }
-
-    if (!projectForm.value.status) {
-        projectFormErrors.value.status = '请选择状态'
-        isValid = false
-    }
 
     if (!projectForm.value.startTime || !projectForm.value.endTime) {
         projectFormErrors.value.dateRange = '请选择项目周期'
