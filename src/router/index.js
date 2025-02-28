@@ -1,7 +1,7 @@
 import Index from '@/pages/frontend/index.vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Login from '@/pages/admin/login.vue'
-import AdminIndex from '@/pages/admin/index.vue'
+import AdminKanban from '@/pages/admin/kanban/KanbanPage.vue'
 import Admin from '@/layouts/admin/admin.vue'
 import AdminTagList from '@/pages/admin/tag/TagPage.vue'
 import AdminProjectIndex from '@/pages/admin/project/ProjectPage.vue'
@@ -28,9 +28,9 @@ const routes = [
         children: [
             {
                 path: "/admin/index",
-                component: AdminIndex,
+                component: AdminKanban,
                 meta: {
-                    title: '仪表盘'
+                    title: '看板'
                 }
             },
             {

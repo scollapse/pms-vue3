@@ -12,7 +12,7 @@ export function useSidebar() {
   const route = useRoute();
 
   const menuItems = ref([
-    { name: '仪表盘', link: '/admin/index', icon: 'fas fa-tachometer-alt' },
+    { name: '看板', link: '/admin/index', icon: 'fas fa-tachometer-alt' },
     { name: '标签管理', link: '/admin/tag/list', icon: 'fas fa-tags' },
     { name: '项目管理', link: '/admin/project/index', icon: 'fas fa-project-diagram' }
   ]);

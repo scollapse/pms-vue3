@@ -6,7 +6,7 @@
                 <li class="mr-2" role="presentation">
                     <button class="inline-block p-4 border-b-2 rounded-t-lg" :class="[
                         activeTab === 'task'
-                            ? 'text-blue-600 border-blue-600'
+                            ? 'text-blue-500 border-blue-500'
                             : 'hover:text-gray-600 hover:border-gray-300 border-transparent'
                     ]" @click="activeTab = 'task'" role="tab">
                         任务管理
@@ -15,7 +15,7 @@
                 <li class="mr-2" role="presentation">
                     <button class="inline-block p-4 border-b-2 rounded-t-lg" :class="[
                         activeTab === 'project'
-                            ? 'text-blue-600 border-blue-600'
+                            ? 'text-blue-500 border-blue-500'
                             : 'hover:text-gray-600 hover:border-gray-300 border-transparent'
                     ]" @click="activeTab = 'project'" role="tab">
                         项目管理

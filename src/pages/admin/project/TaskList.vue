@@ -17,6 +17,7 @@
                     <th class="px-4 py-2 text-left text-gray-600">所属项目</th>
                     <th class="px-4 py-2 text-left text-gray-600">状态</th>
                     <th class="px-4 py-2 text-left text-gray-600">优先级</th>
+                    <th class="px-4 py-2 text-left text-gray-600">标签</th>
                     <th class="px-4 py-2 text-left text-gray-600">预计工时</th>
                     <th class="px-4 py-2 text-left text-gray-600">开始时间</th>
                     <th class="px-4 py-2 text-left text-gray-600">截止时间</th>
@@ -38,6 +39,14 @@
                         ]">
                             {{ getPriorityLabel(task.priority) }}
                         </span>
+                    </td>
+                    <td class="px-4 py-2">
+                        <div class="flex flex-wrap gap-1">
+                            <el-tag v-for="tag in task.tags" :key="tag.id" size="small" class="mr-1">
+                                {{ tag.name }}
+                            </el-tag>
+                            <span v-if="!task.tags || task.tags.length === 0" class="text-gray-400 text-xs">无标签</span>
+                        </div>
                     </td>
                     <td class="px-4 py-2">{{ task.estimateHours }}h</td>
                     <td class="px-4 py-2">{{ formatDate(task.startTime) }}</td>

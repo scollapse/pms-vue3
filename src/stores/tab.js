@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 export const useTabStore = defineStore('tab', {
     state: () => ({
         tabs: [
-            { title: '仪表盘', path: '/admin/index' },
+            { title: '看板', path: '/admin/index' },
             { title: '标签管理', path: '/admin/tag/list' },
             { title: '项目管理', path: '/admin/project/index' }
         ],
