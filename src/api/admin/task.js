@@ -35,3 +35,8 @@ export function finishTask(data) {
         data
     );
 } 
+
+// 获取任务统计数据
+export function fetchTaskStatistics() {
+    return axios.post("/interface/admin/task/static");
+}

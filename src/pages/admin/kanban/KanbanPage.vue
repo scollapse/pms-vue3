@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-100 p-6 rounded-2xl shadow-sm">
+  <div class="bg-white p-6 rounded-2xl shadow-sm">
     <!-- 顶部标签页 -->
     <div class="mb-6 bg-white p-4 rounded-3xl">
       <div class="border-b border-gray-200">
@@ -32,11 +32,6 @@
               <h3 class="text-lg font-medium text-gray-900">{{ card.title }}</h3>
               <div class="mt-2 flex items-baseline">
                 <p class="text-4xl font-semibold text-sky-400">{{ card.count }}</p>
-                <p class="ml-2 flex items-baseline text-sm font-semibold">
-                  <span :class="card.trend > 0 ? 'text-green-600' : 'text-red-600'">
-                    {{ card.trend > 0 ? '+' : '' }}{{ card.trend }}%
-                  </span>
-                </p>
               </div>
             </div>
             <div class="w-64 h-20">
@@ -69,7 +64,7 @@
           <!-- 任务列表 -->
           <div class="space-y-4">
             <div v-for="task in paginatedTasks" :key="task.id"
-              class="flex items-center justify-between p-4 bg-gray-50 rounded-3xl hover:bg-gray-100 transition-colors duration-200">
+              class="flex items-center justify-between p-4 bg-white rounded-3xl hover:bg-gray-100 transition-colors duration-200">
               <div class="flex-1">
                 <h4 class="text-sm font-medium text-gray-900">{{ task.name }}</h4>
                 <div class="flex items-center space-x-2 mt-1">
@@ -176,7 +171,7 @@
       </div>
 
       <!-- 三状态任务列表 -->
-      <div class="grid grid-cols-3 gap-6 bg-gray-50 p-4 rounded-3xl">
+      <div class="grid grid-cols-3 gap-6 bg-white p-4 rounded-3xl">
         <div v-for="column in taskColumns" :key="column.id" 
           :class="[
             'p-6 rounded-3xl shadow-sm',
@@ -186,7 +181,7 @@
           ]">
           <h3 class="text-lg font-medium text-gray-900 mb-4">{{ column.title }}</h3>
           <div class="space-y-4">
-            <div v-for="task in column.tasks" :key="task.id" class="p-4 bg-gray-50 rounded-3xl">
+            <div v-for="task in column.tasks" :key="task.id" class="p-4 bg-white  rounded-3xl">
               <div class="flex justify-between items-start">
                 <div>
                   <h4 class="text-sm font-medium text-gray-900">{{ task.name }}</h4>
@@ -218,6 +213,7 @@ import { LineChart, PieChart } from 'echarts/charts'
 import { GridComponent, LegendComponent } from 'echarts/components'
 import VChart from 'vue-echarts'
 import * as echarts from 'echarts'
+import { fetchTaskStatistics } from '@/api/admin/task'
 
 use([
   CanvasRenderer,
@@ -235,29 +231,43 @@ const tabs = [
 const activeTab = ref('task')
 
 // 统计卡片数据
-const statisticsCards = [
+const statisticsCards = ref([
   { 
     id: 1, 
     title: '总任务数', 
-    count: 128, 
-    trend: 12,
-    trendData: [10, 115, 120, 125, 128]
+    count: 0, 
+    trendData: []
   },
   { 
     id: 2, 
     title: '待办任务', 
-    count: 42, 
-    trend: -5,
-    trendData: [50, 48, 45, 44, 42]
+    count: 0, 
   },
   { 
     id: 3, 
     title: '已办任务', 
-    count: 86, 
-    trend: 8,
-    trendData: [75, 78, 80, 83, 86]
+    count: 0, 
   }
-]
+])
+
+// 获取统计数据
+const fetchStatistics = async () => {
+  try {
+    const response = await fetchTaskStatistics()
+    console.log("接口返回数据:", response)
+    if (response.success) {
+      statisticsCards.value[0].count = response.data.total
+      statisticsCards.value[0].trendData = response.data.trendData
+      statisticsCards.value[1].count = response.data.unfinished
+      statisticsCards.value[2].count = response.data.finished
+    }
+  } catch (error) {
+    console.error('获取统计数据失败：', error)
+  }
+}
+
+// 页面加载时获取统计数据
+fetchStatistics()
 
 // 生成图表配置
 const getChartOption = (card) => {
@@ -299,8 +309,8 @@ const getChartOption = (card) => {
   } else {
     // 待办任务和已办任务使用圆环图
     const percentage = card.id === 2 ? 
-      (card.count / statisticsCards[0].count * 100).toFixed(0) : 
-      (card.count / statisticsCards[0].count * 100).toFixed(0)
+      (card.count / statisticsCards.value[0].count * 100).toFixed(0) : 
+      (card.count / statisticsCards.value[0].count * 100).toFixed(0)
     return {
       series: [{
         type: 'pie',
@@ -311,7 +321,7 @@ const getChartOption = (card) => {
           position: 'center',
           formatter: `${percentage}%`,
           fontSize: 20,
-          color: card.trend > 0 ? '#10B981' : '#F87171',
+          color: card.id === 2 ? '#F87171' : '#10B981',
           fontWeight: '300'
         },
         emphasis: {
@@ -323,11 +333,11 @@ const getChartOption = (card) => {
             value: card.count,
             name: '已完成',
             itemStyle: {
-              color: card.trend > 0 ? '#10B981' : '#F87171'
+              color: card.id === 2 ? '#F87171' : '#10B981'
             }
           },
           { 
-            value: statisticsCards[0].count - card.count,
+            value: statisticsCards.value[0].count - card.count,
             name: '未完成',
             itemStyle: {
               color: '#F9FAFB'
