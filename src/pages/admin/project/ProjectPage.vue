@@ -35,7 +35,7 @@
             <div v-show="activeTab === 'project'" role="tabpanel">
                 <ProjectList :projects="projects" :is-loading="isProjectLoading" @add-project="showAddProjectDialog"
                     @edit-project="showEditProjectDialog" @delete-project="handleDeleteProject"
-                    @refresh="refreshProjectList" />
+                    @refresh="refreshProjectList" @status-change="handleStatusChange" />
                 <pagination style="margin-top: 10px;" :load-data="loadProjects" :filters="projectFilters"
                     ref="projectPagination" />
             </div>
@@ -187,6 +187,16 @@ const taskPagination = ref(null)
 const projectPagination = ref(null)
 const taskFilters = ref({})
 const projectFilters = ref({})
+
+// 处理项目状态变更
+const handleStatusChange = (status) => {
+    if (status === 'all') {
+        delete projectFilters.value.status
+    } else {
+        projectFilters.value.status = status
+    }
+    refreshProjectList()
+}
 
 // 表单相关
 const taskFormMode = ref('add')

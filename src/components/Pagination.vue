@@ -1,47 +1,50 @@
 <template>
-  <div class="flex items-center justify-between p-4 bg-white rounded-xl shadow-md">
-    <!-- 数据信息 -->
-    <div class="text-sm text-gray-600">
-      总数据量：{{ total }} | 每页：{{ pageSize }} | 当前页：{{ currentPage }}
-    </div>
-    <!-- 分页 -->
-    <nav aria-label="Page navigation example">
-      <ul class="inline-flex -space-x-px text-sm">
-        <!-- 上一页 -->
-        <li>
-          <button
-            @click="handlePrev"
-            :disabled="currentPage === 1"
-            class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-white bg-purple-500  border border-e-0 border-gray-300 rounded-s-lg hover:bg-purple-700 disabled:bg-gray-500 disabled:cursor-not-allowed"
-          >
-            上一页
-          </button>
-        </li>
-        <!-- 页码 -->
-        <li
+  <div class="flex items-center justify-between p-2 bg-white rounded-xl shadow-md">
+    <!-- 上一页按钮 -->
+    <button 
+      @click="handlePrev" 
+      :disabled="currentPage === 1"
+      class="p-1.5 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+
+    <!-- 中间区域：页码和分页信息 -->
+    <div class="flex flex-col items-center space-y-1">
+      <!-- 页码按钮 -->
+      <div class="flex space-x-1">
+        <button
           v-for="page in pages"
           :key="page"
-          :class="{'bg-purple-50 text-purple-600': page === currentPage, 'text-gray-500 hover:text-purple-700': page !== currentPage}"
+          @click="handlePageClick(page)"
+          :class="[
+            'w-6 h-6 flex items-center justify-center rounded-full transition-colors duration-200 text-sm',
+            currentPage === page 
+              ? 'bg-purple-500 text-white' 
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          ]"
         >
-            <button
-            @click="handlePageClick(page)"
-            :class="{'flex items-center justify-center px-3 h-8 leading-tight bg-white border border-gray-300 hover:bg-purple-100 rounded': true, 'text-purple-800 font-bold': page === currentPage}"
-          >
-            {{ page }}
-          </button>
-        </li>
-        <!-- 下一页 -->
-        <li>
-          <button
-            @click="handleNext"
-            :disabled="currentPage === totalPages || totalPages === 0"
-            class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-white bg-purple-500 border border-e-0 border-gray-300 rounded-e-lg hover:bg-purple-700 disabled:bg-gray-500 disabled:cursor-not-allowed"
-          >
-            下一页
-          </button>
-        </li>
-      </ul>
-    </nav>
+          {{ page }}
+        </button>
+      </div>
+      <!-- 分页信息 -->
+      <div class="text-xs text-gray-600">
+        {{ totalPages === 0 ? '0 / 0' : `${currentPage} / ${totalPages}` }} 页 | 共 {{ total }} 条
+      </div>
+    </div>
+
+    <!-- 下一页按钮 -->
+    <button 
+      @click="handleNext" 
+      :disabled="currentPage === totalPages || totalPages === 0"
+      class="p-1.5 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
   </div>
 </template>
 
