@@ -204,7 +204,7 @@
         <CalendarHeatmap
           v-if="viewMode === 'year'"
           :values="heatmapData"
-          end-date="2025-4-6"
+          :end-date="dayjs().format('YYYY-MM-DD')"
           :tooltip-unit="'个任务'"
           :range-color="['#ebedf0', '#dae2ef','#c0ddf9','#73b3f3','#3886e1','#17459e']"
           :round="5"
