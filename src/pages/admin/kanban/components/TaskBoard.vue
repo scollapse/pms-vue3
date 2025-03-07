@@ -133,7 +133,7 @@
       <div class=" bg-orange-50 p-6 rounded-3xl shadow-sm">
         <h3 class="text-base  font-normal text-gray-900 mb-4">今日时间线</h3>
         <div class="flow-root">
-          <ol class="relative border-s border-gray-200">
+          <ol v-if="timelineEvents.length > 0" class="relative border-s border-gray-200">
             <li v-for="event in timelineEvents" :key="event.id" class="mb-6 ms-6">
               <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white">
                 <svg class="w-2.5 h-2.5 text-blue-800" fill="currentColor" viewBox="0 0 20 20">
@@ -144,6 +144,9 @@
               <time class="block mb-2 text-sm font-normal text-gray-500">{{ event.time }}</time>
             </li>
           </ol>
+          <div v-else class="flex justify-center items-center py-8 text-gray-500">
+            今日暂无已完成
+          </div>
         </div>
       </div>
     </div>
@@ -171,6 +174,58 @@
         </div>
       </div>
     </div>
+
+    <!-- 任务热力图 -->
+    <div class="bg-purple-100 p-4 rounded-3xl">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-medium text-gray-900">任务分布热力图</h3>
+        <div class="flex space-x-2">
+          <button
+            @click="viewMode = 'year'"
+            :class="[
+              'px-3 py-1 text-sm rounded-md',
+              viewMode === 'year' ? 'bg-indigo-100 text-indigo-600' : 'text-gray-500 hover:text-gray-700'
+            ]"
+          >
+            年视图
+          </button>
+          <button
+            @click="viewMode = 'month'"
+            :class="[
+              'px-3 py-1 text-sm rounded-md',
+              viewMode === 'month' ? 'bg-indigo-100 text-indigo-600' : 'text-gray-500 hover:text-gray-700'
+            ]"
+          >
+            月视图
+          </button>
+        </div>
+      </div>
+      <div class="p-6 bg-violet-50 rounded-3xl shadow-sm overflow-x-auto">
+        <CalendarHeatmap
+          v-if="viewMode === 'year'"
+          :values="heatmapData"
+          end-date="2025-4-6"
+          :tooltip-unit="'个任务'"
+          :range-color="['#ebedf0', '#dae2ef','#c0ddf9','#73b3f3','#3886e1','#17459e']"
+          :round="5"
+          :dark-mode="false"
+          class="rounded-xl overflow-hidden text-xs"
+          style="font-size: 10px;"
+        />
+        <MonthHeatmap
+          v-else
+          :month="currentMonth"
+          :values="monthHeatmapData"
+          :max="monthDataMax"
+          :range-colors="['#ebedf0', '#dae2ef','#c0ddf9','#73b3f3','#3886e1','#17459e']"
+          :round="5"
+          :dark-mode="false"
+          :tooltip-unit="'个任务'"
+          class="rounded-xl overflow-hidden text-xs"
+          style="font-size: 10px;"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -182,9 +237,11 @@ import { LineChart, PieChart } from 'echarts/charts'
 import { GridComponent, LegendComponent } from 'echarts/components'
 import VChart from 'vue-echarts'
 import * as echarts from 'echarts'
-import { fetchTaskStatistics, fetchTasks, finishTask, updateTask } from '@/api/admin/task'
+import { fetchTaskStatistics, fetchTasks, updateTask } from '@/api/admin/task'
 import toast from '@/composables/utils/toast'
 import dayjs from 'dayjs'
+import CalendarHeatmap from '@/components/CalendarHeatmap.vue'
+import MonthHeatmap from '@/components/MonthHeatmap.vue'
 
 use([
   CanvasRenderer,
@@ -228,9 +285,6 @@ const fetchStatistics = async () => {
     console.error('获取统计数据失败：', error)
   }
 }
-
-// 页面加载时获取统计数据
-fetchStatistics()
 
 // 生成图表配置
 const getChartOption = (card) => {
@@ -466,13 +520,6 @@ const loadTimelineEvents = async () => {
   }
 }
 
-// 页面加载时获取任务数据
-onMounted(() => {
-  loadTasks()
-  loadTaskColumns()
-  loadTimelineEvents()
-})
-
 // 任务操作处理函数更新后重新加载数据
 const handleTaskAction = async (task, action) => {
   const actionMap = {
@@ -534,4 +581,65 @@ const taskColumns = ref([
     tasks: []
   }
 ])
+
+// 热力图数据
+const heatmapData = ref([])
+const monthEndDate = ref(dayjs().endOf('month').format('YYYY-MM-DD'))
+
+// 视图模式切换
+const viewMode = ref('year')
+const currentMonth = ref(new Date())
+const monthHeatmapData = ref([])
+const monthDataMax = ref(0)
+
+// 加载热力图数据
+const loadHeatmapData = async () => {
+  try {
+    const startDate = dayjs().startOf('month').format('YYYY-MM-DD 00:00:00')
+    const endDate = dayjs().endOf('month').format('YYYY-MM-DD 23:59:59')
+    
+    const res = await fetchTasks({
+      current: 1,
+      size: 999,
+      startDate,
+      endDate
+    })
+
+    if (res.success) {
+      // 按日期分组统计任务数量
+      const taskCountMap = {}
+      res.data.forEach(task => {
+        const date = dayjs(task.endTime).format('YYYY-MM-DD')
+        taskCountMap[date] = (taskCountMap[date] || 0) + 1
+      })
+      // 生成完整当月日期数据（包含零值）
+      const daysInMonth = dayjs().daysInMonth()
+      const heatmapDataArray = []
+      for (let i = 0; i < daysInMonth; i++) {
+        const date = dayjs().startOf('month').add(i, 'day').format('YYYY-MM-DD')
+        heatmapDataArray.push({
+          date,
+          count: taskCountMap[date] || 0
+        })
+      }
+
+      heatmapData.value = heatmapDataArray
+      
+      // 设置月视图数据
+      monthHeatmapData.value = heatmapDataArray
+      monthDataMax.value = Math.max(...heatmapDataArray.map(d => d.count), 1)
+    }
+  } catch (error) {
+    console.error('加载热力图数据失败：', error)
+  }
+}
+
+// 在页面加载时获取热力图数据
+onMounted(() => {
+  loadTasks()
+  loadTaskColumns()
+  loadTimelineEvents()
+  fetchStatistics()
+  loadHeatmapData()
+})
 </script>
