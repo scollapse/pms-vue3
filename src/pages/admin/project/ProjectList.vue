@@ -1,5 +1,5 @@
 <template>
-    <div class="p-4 bg-white rounded-xl shadow-md">
+    <div class="p-4 bg-white rounded-xl shadow-md h-full">
         <!-- 控制栏 -->
         <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
             <div class="flex space-x-2">
@@ -34,14 +34,7 @@
                         </svg>
                     </button>
                 </div>
-                <button @click="$emit('add-project')"
-                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-purple-200 focus:outline-none  focus:border-purple-500">
-                    <svg class="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                    新增项目
-                </button>
+                <!-- 新增项目按钮已移除，改为使用右侧固定表单 -->
             </div>
         </div>
 
@@ -190,7 +183,7 @@
                     <div :class="[getProgressColor(getProjectProgress(project)), 'h-1']" :style="{ width: getProjectProgress(project) + '%' }"></div>
                 </div>
                 <!-- 操作按钮 -->
-                <div class="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
+                <div class="flex items-center gap-2 mt-4  border-t border-gray-100">
                     <button v-if="['planning', 'in_progress', 'paused'].includes(project.status)"
                         @click="$emit('edit-project', project.projectId)"
                         class="flex-1 inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 rounded-b-lg hover:bg-blue-200">

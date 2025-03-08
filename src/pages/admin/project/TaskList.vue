@@ -1,8 +1,40 @@
 <template>
-    <div class="p-4 bg-white rounded-xl shadow-md">
-        <div class="flex justify-between items-center mb-4">
-            <button @click="$emit('add-task')"
-                class="px-4 py-2 text-white bg-purple-600 rounded-xl hover:bg-purple-700">新增任务</button>
+    <div class="p-4 bg-white rounded-xl shadow-md h-full">
+        <!-- 控制栏 -->
+        <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+            <div class="flex space-x-2">
+                <button v-for="status in statusOptions" :key="status.value" @click="currentStatus = status.value"
+                    :class="[
+                    'px-3 py-1.5 text-sm font-medium rounded-lg transition-colors',
+                    currentStatus === status.value
+                        ? 'bg-purple-100 text-purple-700'
+                        : 'text-gray-600 hover:bg-gray-100'
+                ]">
+                    {{ status.label }}
+                </button>
+            </div>
+            <div class="flex items-center space-x-3">
+                <div class="flex bg-gray-100 rounded-lg p-1">
+                    <button @click="viewMode = 'list'" :class="[
+                    'p-1.5 rounded transition-colors',
+                    viewMode === 'list' ? 'bg-purple-50 text-purple-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                ]">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                    <button @click="viewMode = 'grid'" :class="[
+                    'p-1.5 rounded transition-colors',
+                    viewMode === 'grid' ? 'bg-purple-50 text-purple-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                ]">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- 加载效果 -->
@@ -10,7 +42,7 @@
             <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
         </div>
 
-        <table v-else class="min-w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 table-auto">
+        <table v-else-if="viewMode === 'list'" class="min-w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 table-auto">
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-4 py-2 text-left text-gray-600">任务名称</th>
@@ -121,11 +153,78 @@
                 </tr>
             </tbody>
         </table>
+
+        <!-- 栅格视图 -->
+        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div v-for="task in tasks" :key="task.taskId"
+                class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow overflow-hidden relative flex flex-col h-full">
+                <!-- 任务图标区域 -->
+                <div class="h-24 bg-gradient-to-r from-blue-100 to-purple-100 flex items-center justify-center">
+                    <div class="h-12 w-12 rounded-lg shadow-md flex items-center justify-center bg-white">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="p-6 flex flex-col items-center flex-grow"> 
+                    <div class="flex flex-col items-center gap-3">
+                        <h3 class="text-lg font-bold text-gray-900">{{ task.taskName }}</h3>
+                        <div class="flex items-center gap-3"> 
+                            <span :class="['px-2 py-1 rounded-md text-xs font-medium', getPriorityType(task.priority)]">
+                                {{ getPriorityLabel(task.priority) }}
+                            </span> 
+                            <el-tag :type="getStatusType(task.status)">{{ getStatusLabel(task.status) }}</el-tag>
+                        </div>
+                    </div>
+
+                    <!-- 任务信息 -->
+                    <div class="space-y-2 mb-4 w-full text-center mt-4">
+                        <div class="flex items-center justify-center gap-2 text-sm">
+                            <span class="text-gray-500">所属项目: </span>
+                            <span class="text-gray-900">{{ task.projectName }}</span>
+                        </div>
+                        <div class="flex items-center justify-center gap-2 text-sm">
+                            <span class="text-gray-500">截止时间: </span>
+                            <span class="text-gray-900">{{ formatDate(task.endTime) }}</span>
+                        </div>
+                        <div class="flex flex-wrap justify-center gap-1 mt-2">
+                            <el-tag v-for="tag in task.tags" :key="tag.id" size="small" class="mr-1">
+                                {{ tag.name }}
+                            </el-tag>
+                            <span v-if="!task.tags || task.tags.length === 0" class="text-gray-400 text-xs">无标签</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="flex items-center gap-1 border-t border-gray-100 mt-auto">
+                    <button v-if="['todo', 'in_progress', 'wait'].includes(task.status)" 
+                        @click="$emit('edit-task', task.taskId)"
+                        class="flex-1 inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 hover:bg-blue-200">
+                        编辑
+                    </button>
+                    <button v-if="['todo', 'wait'].includes(task.status)"
+                        @click="handleStartTask(task)"
+                        class="flex-1 inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-green-700 bg-green-100 hover:bg-green-200">
+                        开始
+                    </button>
+                    <button v-if="task.status === 'in_progress'"
+                        @click="handleFinishTask(task)"
+                        class="flex-1 inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-green-700 bg-green-100 hover:bg-green-200">
+                        完成
+                    </button>
+                </div>
+            </div>
+            <div v-if="tasks.length === 0" class="col-span-3 text-center py-8 text-gray-500">
+                暂无数据
+            </div>
+        </div>
     </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue'
+import { defineProps, defineEmits, ref, watch } from 'vue'
 import { updateTask } from '@/api/admin/task'
 import toast from '@/composables/utils/toast'
 import modal from '@/composables/utils/modal'
@@ -141,7 +240,28 @@ const props = defineProps({
     },
 })
 
-const emit = defineEmits(['add-task', 'edit-task', 'delete-task', 'refresh'])
+const emit = defineEmits(['add-task', 'edit-task', 'delete-task', 'refresh', 'status-change'])
+
+// 视图模式：列表/网格
+const viewMode = ref('list')
+
+// 当前选中的状态
+const currentStatus = ref('all')
+
+// 状态选项
+const statusOptions = [
+    { label: '全部', value: 'all' },
+    { label: '待处理', value: 'todo' },
+    { label: '进行中', value: 'in_progress' },
+    { label: '已暂停', value: 'wait' },
+    { label: '已完成', value: 'completed' },
+    { label: '已废弃', value: 'deprecated' }
+]
+
+// 监听状态变化
+watch(currentStatus, (newStatus) => {
+    emit('status-change', newStatus)
+})
 
 const getStatusType = (status) => {
     const types = {

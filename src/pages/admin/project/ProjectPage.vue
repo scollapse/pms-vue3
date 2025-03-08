@@ -1,163 +1,79 @@
 <template>
-    <div class="bg-indigo-50 rounded-lg p-4">
-        <!-- Tabs 组件 -->
-        <div class="mb-4 border-b border-gray-200">
-            <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" role="tablist">
-                <li class="mr-2" role="presentation">
-                    <button class="inline-block p-4 border-b-2 rounded-t-lg" :class="[
-                        activeTab === 'task'
-                            ? 'text-blue-500 border-blue-500'
-                            : 'hover:text-gray-600 hover:border-gray-300 border-transparent'
-                    ]" @click="activeTab = 'task'" role="tab">
-                        任务管理
-                    </button>
-                </li>
-                <li class="mr-2" role="presentation">
-                    <button class="inline-block p-4 border-b-2 rounded-t-lg" :class="[
-                        activeTab === 'project'
-                            ? 'text-blue-500 border-blue-500'
-                            : 'hover:text-gray-600 hover:border-gray-300 border-transparent'
-                    ]" @click="activeTab = 'project'" role="tab">
-                        项目管理
-                    </button>
-                </li>
-            </ul>
+    <div class="bg-indigo-50 rounded-lg p-4 h-screen flex">
+        <div class="flex-grow overflow-hidden">
+            <!-- Tabs 组件 -->
+            <div class="mb-4 border-b border-gray-200">
+                <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" role="tablist">
+                    <li class="mr-2" role="presentation">
+                        <button class="inline-block p-4 border-b-2 rounded-t-lg" :class="[
+                            activeTab === 'task'
+                                ? 'text-blue-500 border-blue-500'
+                                : 'hover:text-gray-600 hover:border-gray-300 border-transparent'
+                        ]" @click="activeTab = 'task'" role="tab">
+                            任务管理
+                        </button>
+                    </li>
+                    <li class="mr-2" role="presentation">
+                        <button class="inline-block p-4 border-b-2 rounded-t-lg" :class="[
+                            activeTab === 'project'
+                                ? 'text-blue-500 border-blue-500'
+                                : 'hover:text-gray-600 hover:border-gray-300 border-transparent'
+                        ]" @click="activeTab = 'project'" role="tab">
+                            项目管理
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Tab 内容 -->
+            <div class="tab-content overflow-auto">
+                <div v-show="activeTab === 'task'" role="tabpanel" class="flex">
+                    <div class="flex-grow flex flex-col">
+                        <div class="flex-grow overflow-auto min-h-[600px]">
+                            <TaskList :tasks="tasks" :is-loading="isTaskLoading"
+                                @edit-task="showEditTaskDialog" @delete-task="handleDeleteTask" 
+                                @refresh="refreshTaskList" @status-change="handleTaskStatusChange" />
+                        </div>
+                        <pagination style="margin-top: 10px;" :load-data="loadTasks" :filters="taskFilters"
+                            ref="taskPagination" />
+                    </div>
+                    <!-- 任务表单 -->
+                    <div class="w-1/4 ml-4 transition-all duration-300 ease-in-out min-h-[600px]">
+                        <TaskForm
+                            :task-data="taskForm"
+                            :project-options="projectOptions"
+                            :form-mode="taskFormMode"
+                            :is-loading="isConfirmLoading"
+                            @submit="handleTaskSubmit"
+                            @cancel="clearTaskForm"
+                        />
+                    </div>
+                </div>
+                <div v-show="activeTab === 'project'" role="tabpanel" class="flex">
+                    <div class="flex-grow flex flex-col">
+                        <div class="flex-grow overflow-auto min-h-[600px]">
+                            <ProjectList :projects="projects" :is-loading="isProjectLoading"
+                                @edit-project="showEditProjectDialog" @delete-project="handleDeleteProject"
+                                @refresh="refreshProjectList" @status-change="handleStatusChange" />
+                        </div>
+                        <pagination style="margin-top: 10px;" :load-data="loadProjects" :filters="projectFilters"
+                            ref="projectPagination" />
+                    </div>
+                    <!-- 项目表单 -->
+                    <div class="w-1/3 ml-4 transition-all duration-300 ease-in-out min-h-[600px]">
+                        <ProjectForm
+                            :project-data="projectForm"
+                            :form-mode="projectFormMode"
+                            :is-loading="isConfirmLoading"
+                            @submit="handleProjectSubmit"
+                            @cancel="clearProjectForm"
+                        />
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Tab 内容 -->
-        <div class="tab-content">
-            <div v-show="activeTab === 'task'" role="tabpanel">
-                <TaskList :tasks="tasks" :is-loading="isTaskLoading" @add-task="showAddTaskDialog"
-                    @edit-task="showEditTaskDialog" @delete-task="handleDeleteTask" @refresh="refreshTaskList" />
-                <pagination style="margin-top: 10px;" :load-data="loadTasks" :filters="taskFilters"
-                    ref="taskPagination" />
-            </div>
-            <div v-show="activeTab === 'project'" role="tabpanel">
-                <ProjectList :projects="projects" :is-loading="isProjectLoading" @add-project="showAddProjectDialog"
-                    @edit-project="showEditProjectDialog" @delete-project="handleDeleteProject"
-                    @refresh="refreshProjectList" @status-change="handleStatusChange" />
-                <pagination style="margin-top: 10px;" :load-data="loadProjects" :filters="projectFilters"
-                    ref="projectPagination" />
-            </div>
-        </div>
 
-        <!-- 任务表单对话框 -->
-        <ModalForm ref="taskModal" :isLoading="isConfirmLoading" :title="taskFormTitle" :dialogWidth="'w-[600px]'"
-            :confirmButtonText="taskFormMode === 'add' ? '新增' : '保存'" @submit="handleTaskSubmit" @close="clearTaskForm">
-            <div class="form-container">
-                <div class="form-grid form-grid-2">
-                    <div class="form-item">
-                        <label class="form-label">
-                            任务名称
-                            <span class="form-required">*</span>
-                        </label>
-                        <input v-model="taskForm.taskName" type="text"
-                            class="form-input"
-                            :class="{ 'form-input-error': taskFormErrors.taskName }"
-                            placeholder="请输入任务名称">
-                        <p v-if="taskFormErrors.taskName" class="form-error-text">{{ taskFormErrors.taskName }}</p>
-                    </div>
-                    <div class="form-item">
-                        <label class="form-label">所属项目</label>
-                        <select v-model="taskForm.projectId" class="form-select">
-                            <option v-for="project in projectOptions" :key="project.projectId" :value="project.projectId">
-                                {{ project.projectName }}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="form-item">
-                        <label class="form-label">
-                            优先级
-                            <span class="form-required">*</span>
-                        </label>
-                        <select v-model="taskForm.priority"
-                            class="form-select"
-                            :class="{ 'form-input-error': taskFormErrors.priority }">
-                            <option value="1">P1</option>
-                            <option value="2">P2</option>
-                            <option value="3">P3</option>
-                            <option value="4">P4</option>
-                        </select>
-                        <p v-if="taskFormErrors.priority" class="form-error-text">{{ taskFormErrors.priority }}</p>
-                    </div>
-                    <div class="form-item">
-                        <label class="form-label">预计工时</label>
-                        <input v-model="taskForm.estimateHours" type="number" class="form-input">
-                    </div>
-                </div>
-                <div class="form-grid form-grid-1">
-                    <div class="form-item">
-                        <label class="form-label">
-                            任务周期
-                            <span class="form-required">*</span>
-                        </label>
-                        <DateRangePicker v-model:startDate="taskForm.startTime" v-model:endDate="taskForm.endTime"
-                            placeholder="请选择开始和结束时间"
-                            :class="{ 'form-input-error': taskFormErrors.dateRange }" />
-                        <p v-if="taskFormErrors.dateRange" class="form-error-text">{{ taskFormErrors.dateRange }}</p>
-                    </div>
-                </div>
-                <div class="form-item">
-                    <label class="form-label">标签</label>
-                    <TagInput
-                        v-model="taskForm.tags"
-                        :max-tags="3"
-                    />
-                </div>
-            </div>
-        </ModalForm>
-
-        <!-- 项目表单对话框 -->
-        <ModalForm ref="projectModal" :isLoading="isConfirmLoading" :title="projectFormTitle" :dialogWidth="'w-[600px]'"
-            :confirmButtonText="projectFormMode === 'add' ? '新增' : '保存'" @submit="handleProjectSubmit"
-            @close="clearProjectForm">
-            <div class="form-container">
-                <div class="form-grid form-grid-2">
-                    <div class="form-item">
-                        <label class="form-label">
-                            项目名称
-                            <span class="form-required">*</span>
-                        </label>
-                        <input v-model="projectForm.projectName" type="text"
-                            class="form-input"
-                            :class="{ 'form-input-error': projectFormErrors.projectName }"
-                            placeholder="请输入项目名称">
-                        <p v-if="projectFormErrors.projectName" class="form-error-text">{{ projectFormErrors.projectName }}</p>
-                    </div>
-                    <div class="form-item">
-                        <label class="form-label">
-                            优先级
-                            <span class="form-required">*</span>
-                        </label>
-                        <select v-model="projectForm.priority"
-                            class="form-select"
-                            :class="{ 'form-input-error': projectFormErrors.priority }">
-                            <option value="1">P1</option>
-                            <option value="2">P2</option>
-                            <option value="3">P3</option>
-                            <option value="4">P4</option>
-                        </select>
-                        <p v-if="projectFormErrors.priority" class="form-error-text">{{ projectFormErrors.priority }}</p>
-                    </div>
-                </div>
-                <div class="form-grid form-grid-1">
-                    <div class="form-item">
-                        <label class="form-label">
-                            项目周期
-                            <span class="form-required">*</span>
-                        </label>
-                        <DateRangePicker v-model:startDate="projectForm.startTime" v-model:endDate="projectForm.endTime"
-                            placeholder="请选择开始和结束时间"
-                            :class="{ 'form-input-error': projectFormErrors.dateRange }" />
-                        <p v-if="projectFormErrors.dateRange" class="form-error-text">{{ projectFormErrors.dateRange }}</p>
-                    </div>
-                </div>
-                <div class="form-item">
-                    <label class="form-label">项目描述</label>
-                    <textarea v-model="projectForm.description" rows="3" class="form-textarea" placeholder="请输入项目描述"></textarea>
-                </div>
-            </div>
-        </ModalForm>
     </div>
 </template>
 
@@ -165,7 +81,8 @@
 import { ref, watch, onMounted } from 'vue'
 import TaskList from './TaskList.vue'
 import ProjectList from './ProjectList.vue'
-import ModalForm from '@/components/ModalForm.vue'
+import ProjectForm from './ProjectForm.vue'
+import TaskForm from './TaskForm.vue'
 import Pagination from '@/components/Pagination.vue'
 import { fetchTasks, addTask, updateTask, deleteTask } from '@/api/admin/task'
 import { fetchProjects, addProject, updateProject, deleteProject } from '@/api/admin/project'
@@ -196,6 +113,16 @@ const handleStatusChange = (status) => {
         projectFilters.value.status = status
     }
     refreshProjectList()
+}
+
+// 处理任务状态变更
+const handleTaskStatusChange = (status) => {
+    if (status === 'all') {
+        delete taskFilters.value.status
+    } else {
+        taskFilters.value.status = status
+    }
+    refreshTaskList()
 }
 
 // 表单相关
@@ -303,66 +230,54 @@ const loadProjectOptions = async () => {
 }
 
 // 任务相关方法
-const showAddTaskDialog = async () => {
-    taskFormMode.value = 'add'
-    taskFormTitle.value = '新增任务'
-    await Promise.all([
-        loadProjectOptions()
-    ])
-    clearTaskForm()
-    taskModal.value.openModal()
-}
-
 const showEditTaskDialog = async (taskId) => {
     taskFormMode.value = 'edit'
-    taskFormTitle.value = '编辑任务'
     const task = tasks.value.find(t => t.taskId === taskId)
     if (task) {
         taskForm.value = { ...task }
-        taskModal.value.openModal()
     }
 }
-
-const handleTaskSubmit = async () => {
-    console.log('handleTaskSubmit')
-    // 重置错误信息
+// 清空表单
+const clearTaskForm = () => {
+    taskFormMode.value = 'add'
+    taskForm.value = {
+        taskName: '',
+        projectId: '',
+        priority: '4',
+        estimateHours: 0,
+        startTime: null,
+        endTime: null,
+        tags: []  // 清空标签
+    }
     taskFormErrors.value = {
         taskName: '',
         priority: '',
         dateRange: ''
     }
+}
 
-    // 表单验证
-    let isValid = true
-
-    if (!taskForm.value.taskName?.trim()) {
-        taskFormErrors.value.taskName = '请输入任务名称'
-        isValid = false
-    }
-
-    if (!taskForm.value.priority) {
-        taskFormErrors.value.priority = '请选择优先级'
-        isValid = false
-    }
-    
-
-    if (!taskForm.value.startTime || !taskForm.value.endTime) {
-        taskFormErrors.value.dateRange = '请选择任务周期'
-        isValid = false
-    }
-
-    if (!isValid) {
-        return
-    }
-
+const handleTaskSubmit = async (formData) => {
     isConfirmLoading.value = true
     try {
         const api = taskFormMode.value === 'add' ? addTask : updateTask
-        const res = await api(taskForm.value)
+        const res = await api(formData)
         if (res.success) {
             toast.show('success', `${taskFormMode.value === 'add' ? '新增' : '编辑'}任务成功`)
-            taskModal.value.closeModal()
             refreshTaskList()
+            await loadProjectOptions() // 任务更新后重新加载项目选项
+            
+            // 如果是新增，清空表单；如果是编辑，保持当前数据
+            if (taskFormMode.value === 'add') {
+                clearTaskForm()
+            } else {
+                // 更新当前表单数据为最新数据
+                const updatedTask = await fetchTasks({
+                    taskId: formData.taskId
+                })
+                if (updatedTask.success && updatedTask.data.length > 0) {
+                    taskForm.value = { ...updatedTask.data[0] }
+                }
+            }
         } else {
             toast.show('error', res.errorMessage || '操作失败')
         }
@@ -392,62 +307,36 @@ const handleDeleteTask = (taskId) => {
 }
 
 // 项目相关方法
-const showAddProjectDialog = () => {
-    projectFormMode.value = 'add'
-    projectFormTitle.value = '新增项目'
-    projectModal.value.openModal()
-}
-
 const showEditProjectDialog = async (projectId) => {
     projectFormMode.value = 'edit'
-    projectFormTitle.value = '编辑项目'
     const project = projects.value.find(p => p.projectId === projectId)
     if (project) {
         projectForm.value = { ...project }
-        projectModal.value.openModal()
     }
 }
 
-const handleProjectSubmit = async () => {
-    // 重置错误信息
-    projectFormErrors.value = {
-        projectName: '',
-        priority: '',
-        dateRange: ''
-    }
-
-    // 表单验证
-    let isValid = true
-
-    if (!projectForm.value.projectName?.trim()) {
-        projectFormErrors.value.projectName = '请输入项目名称'
-        isValid = false
-    }
-
-    if (!projectForm.value.priority) {
-        projectFormErrors.value.priority = '请选择优先级'
-        isValid = false
-    }
-    
-
-    if (!projectForm.value.startTime || !projectForm.value.endTime) {
-        projectFormErrors.value.dateRange = '请选择项目周期'
-        isValid = false
-    }
-
-    if (!isValid) {
-        return
-    }
-
+const handleProjectSubmit = async (formData) => {
     isConfirmLoading.value = true
     try {
         const api = projectFormMode.value === 'add' ? addProject : updateProject
-        const res = await api(projectForm.value)
+        const res = await api(formData)
         if (res.success) {
             toast.show('success', `${projectFormMode.value === 'add' ? '新增' : '编辑'}项目成功`)
-            projectModal.value.closeModal()
             refreshProjectList()
             await loadProjectOptions() // 项目更新后重新加载项目选项
+            
+            // 如果是新增，清空表单；如果是编辑，保持当前数据
+            if (projectFormMode.value === 'add') {
+                clearProjectForm()
+            } else {
+                // 更新当前表单数据为最新数据
+                const updatedProject = await fetchProjects({
+                    projectId: formData.projectId
+                })
+                if (updatedProject.success && updatedProject.data.length > 0) {
+                    projectForm.value = { ...updatedProject.data[0] }
+                }
+            }
         } else {
             toast.show('error', res.errorMessage || '操作失败')
         }
@@ -489,25 +378,7 @@ const refreshProjectList = () => {
     }
 }
 
-// 清空表单
-const clearTaskForm = () => {
-    taskForm.value = {
-        taskName: '',
-        projectId: '',
-        priority: '4',
-        estimateHours: 0,
-        startTime: null,
-        endTime: null,
-        tags: []  // 清空标签
-    }
-    taskFormErrors.value = {
-        taskName: '',
-        priority: '',
-        dateRange: ''
-    }
-}
-
-const clearProjectForm = () => {
+const clearProjectForm = (mode = 'add') => {
     projectForm.value = {
         projectName: '',
         priority: '4',
@@ -520,6 +391,8 @@ const clearProjectForm = () => {
         priority: '',
         dateRange: ''
     }
+    // 重置为指定模式，默认为新增模式
+    projectFormMode.value = mode
 }
 
 // 监听表单字段变化，清除对应错误提示
@@ -573,12 +446,17 @@ onMounted(async () => {
     await loadProjectOptions()
 })
 
-// 当切换 tab 时刷新对应列表
+// 重命名为 resetProjectForm 以避免重复声明
+const resetProjectForm = () => {
 watch(() => activeTab.value, (newTab) => {
     if (newTab === 'project' && projectPagination.value) {
         projectPagination.value.refresh()
+        // 切换到项目管理标签时，重置为新增模式
+        projectFormMode.value = 'add'
+        clearProjectForm()
     } else if (newTab === 'task' && taskPagination.value) {
         taskPagination.value.refresh()
     }
 })
+}
 </script>
