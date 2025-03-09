@@ -90,6 +90,7 @@ import toast from '@/composables/utils/toast'
 import modal from '@/composables/utils/modal'
 import DateRangePicker from '@/components/DateRangePicker.vue'
 import TagInput from '@/components/TagInput.vue'
+import eventBus from '@/composables/utils/eventBus'
 import '@/assets/styles/form.css'
 
 const activeTab = ref('task')
@@ -255,7 +256,6 @@ const clearTaskForm = () => {
         dateRange: ''
     }
 }
-
 const handleTaskSubmit = async (formData) => {
     isConfirmLoading.value = true
     try {
@@ -278,6 +278,9 @@ const handleTaskSubmit = async (formData) => {
                     taskForm.value = { ...updatedTask.data[0] }
                 }
             }
+            
+            // 通过事件总线通知TaskBoard组件刷新数据
+            eventBus.emit('task-updated')
         } else {
             toast.show('error', res.errorMessage || '操作失败')
         }
@@ -288,7 +291,6 @@ const handleTaskSubmit = async (formData) => {
         isConfirmLoading.value = false
     }
 }
-
 const handleDeleteTask = (taskId) => {
     modal.showConfirm('确定要删除该任务吗？', async () => {
         try {
@@ -296,6 +298,8 @@ const handleDeleteTask = (taskId) => {
             if (res.success) {
                 toast.show('success', '删除任务成功')
                 refreshTaskList()
+                // 通过事件总线通知TaskBoard组件刷新数据
+                eventBus.emit('task-updated')
             } else {
                 toast.show('error', res.errorMessage)
             }
@@ -337,6 +341,9 @@ const handleProjectSubmit = async (formData) => {
                     projectForm.value = { ...updatedProject.data[0] }
                 }
             }
+            
+            // 通过事件总线通知TaskBoard组件刷新数据
+            eventBus.emit('task-updated')
         } else {
             toast.show('error', res.errorMessage || '操作失败')
         }
@@ -355,6 +362,8 @@ const handleDeleteProject = (projectId) => {
             if (res.success) {
                 toast.show('success', '删除项目成功')
                 refreshProjectList()
+                // 通过事件总线通知TaskBoard组件刷新数据
+                eventBus.emit('task-updated')
             } else {
                 toast.show('error', res.errorMessage || '删除失败')
             }

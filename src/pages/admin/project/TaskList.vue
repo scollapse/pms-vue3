@@ -228,6 +228,7 @@ import { defineProps, defineEmits, ref, watch } from 'vue'
 import { updateTask } from '@/api/admin/task'
 import toast from '@/composables/utils/toast'
 import modal from '@/composables/utils/modal'
+import eventBus from '@/composables/utils/eventBus'
 
 const props = defineProps({
     tasks: {
@@ -316,7 +317,6 @@ const formatDate = (date) => {
     const seconds = String(d.getSeconds()).padStart(2, '0')
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
 }
-
 // 开始任务
 const handleStartTask = (task) => {
     modal.showConfirm('确定要开始该任务吗？', async () => {
@@ -328,6 +328,8 @@ const handleStartTask = (task) => {
             if (res.success) {
                 toast.show('success', '任务已开始')
                 emit('refresh')
+                // 通过事件总线通知TaskBoard组件刷新数据
+                eventBus.emit('task-updated')
             } else {
                 toast.show('error', res.errorMessage || '操作失败')
             }
@@ -349,32 +351,13 @@ const handlePauseTask = (task) => {
             if (res.success) {
                 toast.show('success', '任务已暂停')
                 emit('refresh')
+                // 通过事件总线通知TaskBoard组件刷新数据
+                eventBus.emit('task-updated')
             } else {
                 toast.show('error', res.errorMessage || '操作失败')
             }
         } catch (error) {
             console.error('Failed to pause task:', error)
-            toast.show('error', '操作失败')
-        }
-    })
-}
-
-// 完成任务
-const handleFinishTask = (task) => {
-    modal.showConfirm('确定要完成该任务吗？', async () => {
-        try {
-            const res = await updateTask({
-                taskId: task.taskId,
-                status: 'completed'
-            })
-            if (res.success) {
-                toast.show('success', '任务已完成')
-                emit('refresh')
-            } else {
-                toast.show('error', res.errorMessage || '操作失败')
-            }
-        } catch (error) {
-            console.error('Failed to finish task:', error)
             toast.show('error', '操作失败')
         }
     })
@@ -391,6 +374,8 @@ const handleDeprecateTask = (task) => {
             if (res.success) {
                 toast.show('success', '任务已废弃')
                 emit('refresh')
+                // 通过事件总线通知TaskBoard组件刷新数据
+                eventBus.emit('task-updated')
             } else {
                 toast.show('error', res.errorMessage || '操作失败')
             }

@@ -87,7 +87,20 @@
 
       <!-- 任务列表 -->
       <div class="flex-1 overflow-auto">
-        <div class="space-y-4">
+        <!-- 加载中状态 -->
+        <div v-if="isTasksLoading" class="flex justify-center items-center h-full">
+          <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-500"></div>
+        </div>
+        <!-- 无数据提示 -->
+        <div v-else-if="paginatedTasks.length === 0" class="flex flex-col justify-center items-center h-full">
+          <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+          </svg>
+          <p class="text-gray-500 text-lg">暂无任务数据</p>
+          <p class="text-gray-400 text-sm mt-2">当前筛选条件下没有找到任务</p>
+        </div>
+        <!-- 任务列表内容 -->
+        <div v-else class="space-y-4">
           <div v-for="task in paginatedTasks" :key="task.id"
             class="flex items-center justify-between p-4 bg-white rounded-3xl hover:bg-gray-100 transition-colors duration-200">
             <div class="flex-1">
@@ -184,10 +197,10 @@
       </div>
     </div>
     <!-- 时间线区域 - 使用不同背景色 -->
-    <div class="bg-blue-50 rounded-3xl shadow-sm flex-1 mt-2 p-6 overflow-auto min-h-[calc(50%-12px)]">
+    <div class="bg-blue-50 rounded-3xl shadow-sm flex-1 mt-2 p-6 overflow-hidden min-h-[calc(50%-12px)] flex flex-col">
       <h3 class="text-base font-normal text-gray-900 mb-4">今日时间线</h3>
-      <div class="flow-root">
-        <ol v-if="timelineEvents.length > 0" class="relative border-s border-gray-200">
+      <div v-if="timelineEvents.length > 0" class="flow-root p-4">
+        <ol  class="relative border-s border-gray-200 ">
           <li v-for="event in timelineEvents" :key="event.id" class="mb-6 ms-6">
             <span
               class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white">
@@ -200,10 +213,14 @@
             <time class="block mb-2 text-sm font-normal text-gray-500">{{ event.time }}</time>
           </li>
         </ol>
-        <div v-else class="flex justify-center items-center py-8 text-gray-500">
-          今日暂无已完成
-        </div>
       </div>
+      <div v-else class="flex flex-col justify-center items-center h-full mb-14">
+          <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+          </svg>
+          <p class="text-gray-500 text-lg">暂无时间线数据</p>
+          <p class="text-gray-400 text-sm mt-2">今日暂无已完成任务</p>
+        </div>
     </div>
 
   </div>
@@ -222,6 +239,7 @@ import toast from '@/composables/utils/toast'
 import dayjs from 'dayjs'
 import CalendarHeatmap from '@/components/CalendarHeatmap.vue'
 import MonthHeatmap from '@/components/MonthHeatmap.vue'
+import eventBus from '@/composables/utils/eventBus'
 
 use([
   CanvasRenderer,
@@ -538,6 +556,10 @@ const handleTaskAction = async (task, action) => {
     // 重新加载任务列表和三状态任务列表
     loadTasks()
     loadTaskColumns()
+    // 如果是完成任务，刷新时间线数据
+    if (action === 'complete') {
+      loadTimelineEvents()
+    }
   } catch (error) {
     console.error('更新任务状态失败：', error)
   }
@@ -621,5 +643,14 @@ onMounted(() => {
   loadTimelineEvents()
   fetchStatistics()
   loadHeatmapData()
+  
+  // 监听任务更新事件，刷新看板数据
+  eventBus.on('task-updated', () => {
+    loadTasks()
+    loadTaskColumns()
+    loadTimelineEvents()
+    fetchStatistics()
+    loadHeatmapData()
+  })
 })
 </script>
