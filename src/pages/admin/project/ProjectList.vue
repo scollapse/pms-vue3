@@ -175,6 +175,10 @@
                             <span class="text-gray-500">Due to : </span>
                             <span class="text-gray-900">{{ formatDate(project.endTime) }}</span>
                         </div>
+                        <div class="flex items-center justify-center gap-2 text-sm">
+                            <span class="text-gray-500">任务完成 : </span>
+                            <span class="text-gray-900">{{ project.completedTaskCount || 0 }}/{{ project.allTaskCount || 0 }}</span>
+                        </div>
                     </div>
                 </div>
 
@@ -226,17 +230,12 @@ watch(() => currentStatus.value, (newStatus) => {
     emit('status-change', newStatus)
 })
 
-// 获取项目进度（临时写死）
+// 获取项目进度（根据任务完成情况计算）
 const getProjectProgress = (project) => {
-    // 这里临时返回固定进度，后续可以根据实际数据计算
-    const progressMap = {
-        'planning': 0,
-        'in_progress': 60,
-        'completed': 100,
-        'paused': 45,
-        'deprecated': 30
-    }
-    return progressMap[project.status] || 0
+    // 如果有任务数据，则根据任务完成情况计算进度
+
+        return Math.round((project.completedTaskCount || 0) / project.allTaskCount * 100);
+    
 }
 
 const props = defineProps({

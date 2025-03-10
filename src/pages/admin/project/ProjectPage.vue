@@ -60,7 +60,7 @@
                             ref="projectPagination" />
                     </div>
                     <!-- 项目表单 -->
-                    <div class="w-1/3 ml-4 transition-all duration-300 ease-in-out min-h-[600px]">
+                    <div class="w-1/4 ml-4 transition-all duration-300 ease-in-out min-h-[600px]">
                         <ProjectForm
                             :project-data="projectForm"
                             :form-mode="projectFormMode"
@@ -88,8 +88,6 @@ import { fetchTasks, addTask, updateTask, deleteTask } from '@/api/admin/task'
 import { fetchProjects, addProject, updateProject, deleteProject } from '@/api/admin/project'
 import toast from '@/composables/utils/toast'
 import modal from '@/composables/utils/modal'
-import DateRangePicker from '@/components/DateRangePicker.vue'
-import TagInput from '@/components/TagInput.vue'
 import eventBus from '@/composables/utils/eventBus'
 import '@/assets/styles/form.css'
 
