@@ -178,8 +178,8 @@
         </div>
       </div>
 
-      <!-- 分页控件 -->
-      <div class="flex justify-center space-x-4 mt-6 pt-4 border-t border-gray-200">
+      <!-- 分页控件 - 仅在本周待办时显示 -->
+      <div v-if="activeFilter === 'week'" class="flex justify-center space-x-4 mt-6 pt-4 border-t border-gray-200">
         <button @click="currentPage--" :disabled="currentPage === 1"
           class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -376,9 +376,9 @@ const activeFilter = ref('today')
 const tasks = ref([])
 const isTasksLoading = ref(false)
 
-// 分页相关
+// 分页相关 - 仅用于本周待办
 const currentPage = ref(1)
-const pageSize = 5
+const pageSize = 8
 const totalCount = ref(0)
 
 // 分页后的任务列表
@@ -386,7 +386,7 @@ const paginatedTasks = computed(() => {
   return tasks.value
 })
 
-// 计算总页数
+// 计算总页数 - 仅用于本周待办
 const totalPages = computed(() => {
   return Math.ceil(totalCount.value / pageSize)
 })
@@ -417,10 +417,17 @@ const getPriorityLabel = (priority) => {
 const timelineEvents = ref([])
 
 // 监听筛选条件和页码变化，重新加载数据
-watch([activeFilter, currentPage], () => {
+watch([activeFilter], () => {
   if (activeFilter.value === 'today') {
     fetchTodayTasks()
   } else if (activeFilter.value === 'week') {
+    loadWeekTasks()
+  }
+})
+
+// 仅在本周待办时监听页码变化
+watch(currentPage, () => {
+  if (activeFilter.value === 'week') {
     loadWeekTasks()
   }
 })
@@ -573,10 +580,9 @@ onMounted(() => {
 
 // 统一获取今日任务数据
 const fetchTodayTasks = async () => {
+  isTasksLoading.value = true
   try {
     const res = await fetchTasks({
-      current: 1,
-      size: 999,
       startDate: dayjs().format('YYYY-MM-DD 00:00:00'),
       endDate: dayjs().format('YYYY-MM-DD 23:59:59')
     })
