@@ -227,7 +227,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed,watch } from 'vue'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { LineChart, PieChart } from 'echarts/charts'
@@ -492,6 +492,8 @@ const handleTaskAction = async (task, action) => {
     // 重新加载任务列表和三状态任务列表
     fetchTodayTasks()
     loadHeatmapData()
+    // 通过事件总线通知ProjectPage组件刷新数据
+    eventBus.emit('project-task-updated')
   } catch (error) {
     console.error('更新任务状态失败：', error)
   }
@@ -577,6 +579,13 @@ onMounted(() => {
     fetchTodayTasks()
   })
 })
+
+// 添加组件卸载时的清理逻辑
+onUnmounted(() => {
+    // 移除事件监听器
+    eventBus.off('task-updated')
+})
+
 
 // 统一获取今日任务数据
 const fetchTodayTasks = async () => {

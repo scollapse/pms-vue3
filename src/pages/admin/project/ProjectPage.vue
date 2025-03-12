@@ -78,7 +78,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted,onUnmounted } from 'vue'
 import TaskList from './TaskList.vue'
 import ProjectList from './ProjectList.vue'
 import ProjectForm from './ProjectForm.vue'
@@ -457,6 +457,20 @@ onMounted(async () => {
 
     // 初始加载项目选项
     await loadProjectOptions()
+})
+
+// 添加组件挂载时的事件监听器
+onMounted(() => {
+    // 监听任务更新事件
+    eventBus.on('project-task-updated', () => {
+        refreshTaskList()
+    })
+})
+
+// 添加组件卸载时的清理逻辑
+onUnmounted(() => {
+    // 移除事件监听器
+    eventBus.off('project-task-updated')
 })
 
 // 重命名为 resetProjectForm 以避免重复声明
