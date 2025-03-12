@@ -267,7 +267,7 @@ const getStatusType = (status) => {
         'planning': 'info',
         'in_progress': 'warning',
         'completed': 'success',
-        'paused': 'default',
+        'paused': 'info',
         'deprecated': 'danger'
     }
     return types[status] || 'info'

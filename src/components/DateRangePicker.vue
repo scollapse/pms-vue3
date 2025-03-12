@@ -154,15 +154,23 @@ export default {
   },
   watch: {
     startDate(newVal) {
-      if (this.flatpickrInstance && newVal) {
+      if (this.flatpickrInstance) {
         const endDate = this.endDate || "";
-        this.flatpickrInstance.setDate([newVal, endDate].filter(Boolean), false);
+        if (!newVal && !endDate) {
+          this.flatpickrInstance.clear();
+        } else {
+          this.flatpickrInstance.setDate([newVal, endDate].filter(Boolean), false);
+        }
       }
     },
     endDate(newVal) {
-      if (this.flatpickrInstance && newVal) {
+      if (this.flatpickrInstance) {
         const startDate = this.startDate || "";
-        this.flatpickrInstance.setDate([startDate, newVal].filter(Boolean), false);
+        if (!newVal && !startDate) {
+          this.flatpickrInstance.clear();
+        } else {
+          this.flatpickrInstance.setDate([startDate, newVal].filter(Boolean), false);
+        }
       }
     },
     disabled(newVal) {
@@ -224,4 +232,4 @@ export default {
     opacity: 0.5;
     cursor: not-allowed;
 }
-</style> 
+</style>
