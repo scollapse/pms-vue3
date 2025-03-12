@@ -595,36 +595,32 @@ const currentMonth = ref(new Date())
 const monthHeatmapData = ref([])
 const monthDataMax = ref(0)
 
-// 加载热力图数据
+// 加载年热力图数据
 const loadHeatmapData = async () => {
   try {
-    const startDate = dayjs().startOf('month').format('YYYY-MM-DD 00:00:00')
-    const endDate = dayjs().endOf('month').format('YYYY-MM-DD 23:59:59')
-
     const res = await fetchTasks({
       current: 1,
       size: 999,
-      startDate,
-      endDate
     })
 
     if (res.success) {
       // 按日期分组统计任务数量
       const taskCountMap = {}
       res.data.forEach(task => {
-        const date = dayjs(task.endTime).format('YYYY-MM-DD')
+        // 如果任务没有完成时间则跳过,避免统计未完成的任务
+        if (!task.completionTime) {
+          return;
+        }
+        // 将完成时间格式化为YYYY-MM-DD格式作为热力图的日期键
+        const date = dayjs(task.completionTime).format('YYYY-MM-DD')
+        // 累加每天完成的任务数量
         taskCountMap[date] = (taskCountMap[date] || 0) + 1
       })
-      // 生成完整当月日期数据（包含零值）
-      const daysInMonth = dayjs().daysInMonth()
-      const heatmapDataArray = []
-      for (let i = 0; i < daysInMonth; i++) {
-        const date = dayjs().startOf('month').add(i, 'day').format('YYYY-MM-DD')
-        heatmapDataArray.push({
-          date,
-          count: taskCountMap[date] || 0
-        })
-      }
+      // 直接使用taskCountMap中的所有日期数据
+      const heatmapDataArray = Object.keys(taskCountMap).map(date => ({
+        date,
+        count: taskCountMap[date]
+      }))
 
       heatmapData.value = heatmapDataArray
 
