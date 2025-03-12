@@ -385,4 +385,25 @@ const handleDeprecateTask = (task) => {
         }
     })
 }
+const handleFinishTask = (task) => {
+    modal.showConfirm('确定要完成该任务吗？', async () => {
+        try {
+            const res = await updateTask({
+                taskId: task.taskId,
+                status: 'completed'
+            })
+            if (res.success) {
+                toast.show('success', '任务已完成')
+                emit('refresh')
+                // 通过事件总线通知TaskBoard组件刷新数据
+                eventBus.emit('task-updated')
+            } else {
+                toast.show('error', res.errorMessage || '操作失败')
+            }
+        } catch (error) {
+            console.error('Failed to complete task:', error)
+            toast.show('error', '操作失败')
+        }
+    })
+}
 </script>
