@@ -323,9 +323,10 @@ const getChartOption = (card) => {
     }
   } else {
     // 待办任务和已办任务使用圆环图
-    const percentage = card.id === 2 ?
+    const percentage = statisticsCards.value[0].count === 0 ? 0 : 
+      (card.id === 2 ?
       (card.count / statisticsCards.value[0].count * 100).toFixed(0) :
-      (card.count / statisticsCards.value[0].count * 100).toFixed(0)
+      (card.count / statisticsCards.value[0].count * 100).toFixed(0))
     return {
       series: [{
         type: 'pie',

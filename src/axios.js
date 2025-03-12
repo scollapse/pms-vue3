@@ -17,7 +17,6 @@ const instance = axios.create({
 instance.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么
     const token = getToken();
-    console.log('统一添加请求头的 token', token)
     
     // 如果 token 存在，就添加到请求头中
     if (token) {
