@@ -413,111 +413,13 @@ const getPriorityLabel = (priority) => {
   return priorityLabels[priority] || '未设置'
 }
 
-// 加载任务数据
-const loadTasks = async () => {
-  isTasksLoading.value = true
-  try {
-    const filterParam = activeFilter.value === 'today' ?
-      {
-        startDate: dayjs().format('YYYY-MM-DD 00:00:00'),
-        endDate: dayjs().format('YYYY-MM-DD 23:59:59'),
-        status: 'wait,todo,in_progress'
-      } :
-      {
-        startDate: dayjs().startOf('week').format('YYYY-MM-DD 00:00:00'),
-        endDate: dayjs().endOf('week').format('YYYY-MM-DD 23:59:59'),
-        status: 'wait,todo,in_progress'
-      }
-    const res = await fetchTasks({
-      current: currentPage.value,
-      size: pageSize,
-      ...filterParam
-    })
-    if (res.success) {
-      tasks.value = res.data
-      totalCount.value = res.total
-    }
-  } catch (error) {
-    console.error('加载任务列表失败：', error)
-  } finally {
-    isTasksLoading.value = false
-  }
-}
-
-// 加载三状态任务列表数据
-const loadTaskColumns = async () => {
-  try {
-    const res = await fetchTasks({
-      current: 1,
-      size: 999, // 获取所有任务
-      startDate: dayjs().format('YYYY-MM-DD 00:00:00'),
-      endDate: dayjs().format('YYYY-MM-DD 23:59:59')
-    })
-    if (res.success) {
-      // 清空现有数据
-      taskColumns.value.forEach(column => {
-        column.tasks = []
-      })
-
-      // 根据任务状态分类
-      res.data.forEach(task => {
-        if (['todo', 'wait'].includes(task.status)) {
-          taskColumns.value[0].tasks.push({
-            id: task.id,
-            name: task.taskName,
-            project: task.projectName,
-            date: task.endTime
-          })
-        } else if (task.status === 'in_progress') {
-          taskColumns.value[1].tasks.push({
-            id: task.id,
-            name: task.taskName,
-            project: task.projectName,
-            date: task.endTime
-          })
-        } else if (task.status === 'completed') {
-          taskColumns.value[2].tasks.push({
-            id: task.id,
-            name: task.taskName,
-            project: task.projectName,
-            date: task.endTime
-          })
-        }
-      })
-    }
-  } catch (error) {
-    console.error('加载三状态任务列表失败：', error)
-  }
-}
-
-// 监听筛选条件和页码变化，重新加载数据
-watch([activeFilter, currentPage], () => {
-  loadTasks()
-})
-
 // 时间线事件数据
 const timelineEvents = ref([])
 
-// 加载时间线事件数据
-const loadTimelineEvents = async () => {
-  try {
-    const res = await fetchTasks({
-      current: 1,
-      size: 999,
-      startDate: dayjs().format('YYYY-MM-DD 00:00:00'),
-      endDate: dayjs().format('YYYY-MM-DD 23:59:59'),
-      status: 'completed'
-    })
-    if (res.success) {
-      timelineEvents.value = res.data.map(task => ({
-        task: task.taskName,
-        time: dayjs(task.completionTime).format('HH:mm')
-      }))
-    }
-  } catch (error) {
-    console.error('加载时间线事件失败：', error)
-  }
-}
+// 监听筛选条件和页码变化，重新加载数据
+watch([activeFilter, currentPage], () => {
+  fetchTodayTasks()
+})
 
 // 任务操作处理函数更新后重新加载数据
 const handleTaskAction = async (task, action) => {
@@ -555,8 +457,7 @@ const handleTaskAction = async (task, action) => {
       }
     }
     // 重新加载任务列表和三状态任务列表
-    loadTasks()
-    loadTaskColumns()
+
     // 如果是完成任务，刷新时间线数据
     if (action === 'complete') {
       loadTimelineEvents()
@@ -635,19 +536,73 @@ const loadHeatmapData = async () => {
 
 // 在页面加载时获取热力图数据
 onMounted(() => {
-  loadTasks()
-  loadTaskColumns()
-  loadTimelineEvents()
   fetchStatistics()
   loadHeatmapData()
+  fetchTodayTasks()
   
   // 监听任务更新事件，刷新看板数据
   eventBus.on('task-updated', () => {
-    loadTasks()
-    loadTaskColumns()
-    loadTimelineEvents()
     fetchStatistics()
     loadHeatmapData()
+    fetchTodayTasks()
   })
 })
+
+// 统一获取今日任务数据
+const fetchTodayTasks = async () => {
+  try {
+    const res = await fetchTasks({
+      current: 1,
+      size: 999,
+      startDate: dayjs().format('YYYY-MM-DD 00:00:00'),
+      endDate: dayjs().format('YYYY-MM-DD 23:59:59')
+    })
+
+    if (res.success) {
+      // 更新三状态任务列表
+      taskColumns.value.forEach(column => {
+        column.tasks = []
+      })
+      
+      res.data.forEach(task => {
+        const taskItem = {
+          id: task.id,
+          name: task.taskName,
+          project: task.projectName,
+          date: task.endTime
+        }
+        
+        if (['todo', 'wait'].includes(task.status)) {
+          taskColumns.value[0].tasks.push(taskItem)
+        } else if (task.status === 'in_progress') {
+          taskColumns.value[1].tasks.push(taskItem)
+        } else if (task.status === 'completed') {
+          taskColumns.value[2].tasks.push(taskItem)
+        }
+      })
+
+      // 更新今日待办数据
+      tasks.value = res.data
+      totalCount.value = res.total
+
+      // 更新时间线数据（仅显示已完成的任务）
+      timelineEvents.value = res.data
+        .filter(task => task.status === 'completed')
+        .map(task => ({
+          task: task.taskName,
+          time: dayjs(task.completionTime).format('HH:mm')
+        }))
+    }
+  } catch (error) {
+    console.error('获取今日任务数据失败：', error)
+  } finally {
+    isTasksLoading.value = false
+  }
+}
+
+// 监听筛选条件和页码变化，重新加载数据
+watch([activeFilter, currentPage], () => {
+  fetchTodayTasks()
+})
+
 </script>

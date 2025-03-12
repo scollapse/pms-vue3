@@ -215,12 +215,7 @@ export default defineComponent({
         dayElements.value.forEach((el, index) => {
           if (el) {
             const day = index + 1;
-            const date = dayjs(new Date(
-              currentMonth.value.getFullYear(),
-              currentMonth.value.getMonth(),
-              day
-            )).format('YYYY-MM-DD');
-            const dayData = props.values.find(v => v.date === date);
+            const dayData = getDayData(day);
             const count = dayData?.count || 0;
             
             instances.push(
