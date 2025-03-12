@@ -75,6 +75,7 @@
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import { fetchTags } from '@/api/admin/tag'
 import toast from '@/composables/utils/toast'
+import eventBus from '@/composables/utils/eventBus'
 
 const props = defineProps({
     modelValue: {
@@ -97,6 +98,7 @@ const availableTags = ref([])
 
 // 过滤后的标签列表
 const filteredTags = computed(() => {
+    if (!availableTags.value) return []
     const searchText = inputValue.value.toLowerCase()
     return availableTags.value.filter(tag => 
         tag.name.toLowerCase().includes(searchText) && 
@@ -112,10 +114,15 @@ const loadTags = async () => {
             size: 999
         })
         if (res.success) {
-            availableTags.value = res.data
+            availableTags.value = res.data || []
+        } else {
+            availableTags.value = []
+            toast.error('加载标签列表失败')
         }
     } catch (error) {
         console.error('Failed to load tags:', error)
+        availableTags.value = []
+        toast.error('加载标签列表失败')
     }
 }
 
@@ -194,6 +201,11 @@ const clearTags = () => {
 
 // 初始化加载标签列表
 loadTags()
+
+// 监听标签更新事件
+eventBus.on('tags-updated', () => {
+    loadTags()
+})
 
 const tagsContainer = ref(null)
 const tagsContainerWidth = ref(0)

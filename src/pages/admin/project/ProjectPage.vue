@@ -276,7 +276,13 @@ const handleTaskSubmit = async (formData) => {
                     taskForm.value = { ...updatedTask.data[0] }
                 }
             }
-            
+            //
+            // 检查是否有新标签
+            const hasNewTags = formData.tags.some(tag => !tag.id)
+            // 如果有新标签，发送更新事件
+            if (hasNewTags) {
+                eventBus.emit('tags-updated')
+            }
             // 通过事件总线通知TaskBoard组件刷新数据
             eventBus.emit('task-updated')
         } else {
