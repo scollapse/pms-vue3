@@ -466,7 +466,6 @@ const handleTaskAction = async (task, action) => {
     if (action === 'delay') {
       // 计算延期后的日期 task.endTime 往后延期一天
       const newDate = dayjs(task.endTime).add(1, 'day').format('YYYY-MM-DD HH:mm:ss');
-      console.log('------newDate' + newDate)
       task.endTime = newDate
       const res = await updateTask({ taskId: task.taskId, status: status, endTime: newDate })
       if (res.success) {
@@ -613,8 +612,11 @@ const fetchTodayTasks = async () => {
           // 同时更新时间线数据
           timelineEvents.value.push({
             task: task.taskName,
-            time: dayjs(task.completionTime).format('HH:mm')
+            time: dayjs(task.completionTime).format('HH:mm'),
+            completionTime: task.completionTime
           })
+          // 根据完成时间正序排序
+          timelineEvents.value.sort((a, b) => new Date(a.completionTime) - new Date(b.completionTime))
         }
       })
 
