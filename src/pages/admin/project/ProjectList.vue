@@ -203,6 +203,9 @@
                     </button>
                 </div>
             </div>
+            <div v-if="projects.length === 0" class="col-span-3 text-center py-8 text-gray-500">
+                暂无数据
+            </div>
         </div>
     </div>
 </template>
