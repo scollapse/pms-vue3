@@ -59,8 +59,8 @@
             </thead>
             <tbody>
                 <tr v-for="task in tasks" :key="task.taskId" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-100">
-                    <td class="px-4 py-2">{{ task.taskName }}</td>
-                    <td class="px-4 py-2">{{ task.projectName }}</td>
+                    <td class="px-4 py-2 max-w-[150px]"><div class="truncate" v-tooltip="task.taskName">{{ task.taskName }}</div></td>
+                    <td class="px-4 py-2 max-w-[150px]"><div class="truncate" v-tooltip="task.projectName">{{ task.projectName }}</div></td>
                     <td class="px-4 py-2">
                         <el-tag :type="getStatusType(task.status)">{{ getStatusLabel(task.status) }}</el-tag>
                     </td>
@@ -162,7 +162,8 @@
                 <div class="h-24 bg-gradient-to-r from-blue-100 to-purple-100 flex items-center justify-center">
                     <div class="h-12 w-12 rounded-lg shadow-md flex items-center justify-center bg-white">
                         <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            <path stroke-linecap="round"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                         </svg>
                     </div>
                 </div>
@@ -224,11 +225,12 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref, watch } from 'vue'
+import { defineProps, defineEmits, ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { updateTask } from '@/api/admin/task'
 import toast from '@/composables/utils/toast'
 import modal from '@/composables/utils/modal'
 import eventBus from '@/composables/utils/eventBus'
+import { vTooltip } from '@/composables/utils/directives'
 
 const props = defineProps({
     tasks: {
@@ -248,6 +250,8 @@ const viewMode = ref('list')
 
 // 当前选中的状态
 const currentStatus = ref('all')
+
+
 
 // 状态选项
 const statusOptions = [
