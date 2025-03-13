@@ -418,6 +418,7 @@ const timelineEvents = ref([])
 
 // 监听筛选条件和页码变化，重新加载数据
 watch([activeFilter], () => {
+  console.log('筛选条件变化', activeFilter.value)
   if (activeFilter.value === 'today') {
     fetchTodayTasks()
   } else if (activeFilter.value === 'week') {
@@ -589,6 +590,7 @@ onUnmounted(() => {
 
 // 统一获取今日任务数据
 const fetchTodayTasks = async () => {
+  console.log('fetchTodayTasks')
   isTasksLoading.value = true
   try {
     const res = await fetchTasks({
@@ -644,10 +646,4 @@ const fetchTodayTasks = async () => {
     isTasksLoading.value = false
   }
 }
-
-// 监听筛选条件和页码变化，重新加载数据
-watch([activeFilter, currentPage], () => {
-  fetchTodayTasks()
-})
-
 </script>
