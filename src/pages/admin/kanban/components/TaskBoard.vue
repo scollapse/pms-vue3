@@ -418,7 +418,6 @@ const timelineEvents = ref([])
 
 // 监听筛选条件和页码变化，重新加载数据
 watch([activeFilter], () => {
-  console.log('筛选条件变化', activeFilter.value)
   if (activeFilter.value === 'today') {
     fetchTodayTasks()
   } else if (activeFilter.value === 'week') {
@@ -594,6 +593,8 @@ const fetchTodayTasks = async () => {
   isTasksLoading.value = true
   try {
     const res = await fetchTasks({
+      current: 1,
+      size: 999,
       startDate: dayjs().format('YYYY-MM-DD 00:00:00'),
       endDate: dayjs().format('YYYY-MM-DD 23:59:59')
     })
