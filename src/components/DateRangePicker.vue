@@ -46,6 +46,8 @@ export default {
         dateFormat: "Y-m-d H:i:s",
         enableTime: true,
         time_24hr: true,
+        defaultHour: 0,
+        defaultMinute: 0,
         defaultDate: [this.startDate, this.endDate].filter(Boolean),
         minDate: this.minDate,
         maxDate: this.maxDate,
@@ -59,10 +61,19 @@ export default {
             return;
           }
           if (selectedDates.length === 2) {
-            const startDate = this.formatDate(selectedDates[0]);
-            const endDate = this.formatDate(selectedDates[1]);
-            this.$emit("update:startDate", startDate);
-            this.$emit("update:endDate", endDate);
+            const startDate = new Date(selectedDates[0]);
+            const endDate = new Date(selectedDates[1]);
+            
+            // 如果时间部分未被修改（还是默认的00:00:00），则设置相应的默认时间
+            if (startDate.getHours() === 0 && startDate.getMinutes() === 0 && startDate.getSeconds() === 0) {
+              startDate.setHours(0, 0, 0);
+            }
+            if (endDate.getHours() === 0 && endDate.getMinutes() === 0 && endDate.getSeconds() === 0) {
+              endDate.setHours(23, 59, 59);
+            }
+            
+            this.$emit("update:startDate", this.formatDate(startDate));
+            this.$emit("update:endDate", this.formatDate(endDate));
             this.flatpickrInstance.close();
           }
         },
@@ -112,7 +123,10 @@ export default {
       if (!this.disabled) {
         const today = new Date();
         const tomorrow = new Date();
-        tomorrow.setDate(today.getDate() + 1);
+        today.setHours(0, 0, 0);
+        tomorrow.setHours(23, 59, 59);
+        tomorrow.setDate(today.getDate());
+        
         this.flatpickrInstance.setDate([today, tomorrow]);
         this.$emit("update:startDate", this.formatDate(today));
         this.$emit("update:endDate", this.formatDate(tomorrow));
@@ -131,7 +145,9 @@ export default {
       if (!this.disabled) {
         const today = new Date();
         const nextWeek = new Date();
+        today.setHours(0, 0, 0);
         nextWeek.setDate(today.getDate() + 7);
+        nextWeek.setHours(23, 59, 59);
         
         this.flatpickrInstance.setDate([today, nextWeek]);
         this.$emit("update:startDate", this.formatDate(today));
@@ -143,7 +159,9 @@ export default {
       if (!this.disabled) {
         const today = new Date();
         const nextMonth = new Date();
+        today.setHours(0, 0, 0);
         nextMonth.setMonth(today.getMonth() + 1);
+        nextMonth.setHours(23, 59, 59);
         
         this.flatpickrInstance.setDate([today, nextMonth]);
         this.$emit("update:startDate", this.formatDate(today));
