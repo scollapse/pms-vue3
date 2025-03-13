@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed ,watch} from "vue";
 
 export default {
   props: {
@@ -61,11 +61,23 @@ export default {
       type: Object,
       required: true,
     },
+    size: {
+      type: Number,
+      default: 10
+    },
   },
   setup(props) {
     const total = ref(0); // 默认总数据量
-    const pageSize = ref(10); // 默认每页大小
+    const pageSize = ref(props.size); // 使用传入的size属性
     const currentPage = ref(1); // 默认当前页
+    
+    // 监听size属性变化
+    watch(() => props.size, (newSize) => {
+      pageSize.value = newSize;
+      // 当页码大小变化时，重置到第一页并重新加载数据
+      currentPage.value = 1;
+      props.loadData(currentPage.value, pageSize.value, props.filters, setTotal);
+    })
 
     const totalPages = computed(() => Math.ceil(total.value / pageSize.value));
 

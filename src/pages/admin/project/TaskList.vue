@@ -251,6 +251,13 @@ const viewMode = ref('list')
 // 当前选中的状态
 const currentStatus = ref('all')
 
+// 监听视图模式变化，发出事件通知父组件
+watch(viewMode, (newMode) => {
+    // 根据视图模式设置不同的分页大小
+    const size = newMode === 'list' ? 10 : 6 // 列表模式10条，网格模式6条
+    emit('view-mode-change', size)
+})
+
 
 
 // 状态选项

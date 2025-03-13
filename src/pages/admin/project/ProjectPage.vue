@@ -32,10 +32,11 @@
                         <div class="flex-grow overflow-auto min-h-[600px]">
                             <TaskList :tasks="tasks" :is-loading="isTaskLoading"
                                 @edit-task="showEditTaskDialog" @delete-task="handleDeleteTask" 
-                                @refresh="refreshTaskList" @status-change="handleTaskStatusChange" />
+                                @refresh="refreshTaskList" @status-change="handleTaskStatusChange"
+                                @view-mode-change="handleTaskViewModeChange" />
                         </div>
                         <pagination style="margin-top: 10px;" :load-data="loadTasks" :filters="taskFilters"
-                            ref="taskPagination" />
+                            :size="taskSize" ref="taskPagination" />
                     </div>
                     <!-- 任务表单 -->
                     <div class="w-1/4 ml-4 transition-all duration-300 ease-in-out min-h-[600px]">
@@ -54,10 +55,11 @@
                         <div class="flex-grow overflow-auto min-h-[600px]">
                             <ProjectList :projects="projects" :is-loading="isProjectLoading"
                                 @edit-project="showEditProjectDialog" @delete-project="handleDeleteProject"
-                                @refresh="refreshProjectList" @status-change="handleStatusChange" />
+                                @refresh="refreshProjectList" @status-change="handleStatusChange"
+                                @view-mode-change="handleProjectViewModeChange" />
                         </div>
                         <pagination style="margin-top: 10px;" :load-data="loadProjects" :filters="projectFilters"
-                            ref="projectPagination" />
+                            :size="projectSize" ref="projectPagination" />
                     </div>
                     <!-- 项目表单 -->
                     <div class="w-1/4 ml-4 transition-all duration-300 ease-in-out min-h-[600px]">
@@ -104,6 +106,10 @@ const projectPagination = ref(null)
 const taskFilters = ref({})
 const projectFilters = ref({})
 
+// 定义任务和项目的分页大小
+const taskSize = ref(10) // 默认列表视图大小
+const projectSize = ref(10) // 默认列表视图大小
+
 // 处理项目状态变更
 const handleStatusChange = (status) => {
     if (status === 'all') {
@@ -122,6 +128,16 @@ const handleTaskStatusChange = (status) => {
         taskFilters.value.status = status
     }
     refreshTaskList()
+}
+
+// 处理任务视图模式变化
+const handleTaskViewModeChange = (size) => {
+    taskSize.value = size
+}
+
+// 处理项目视图模式变化
+const handleProjectViewModeChange = (size) => {
+    projectSize.value = size
 }
 
 // 表单相关

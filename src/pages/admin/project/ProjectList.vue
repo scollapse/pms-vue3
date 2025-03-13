@@ -219,6 +219,13 @@ import modal from '@/composables/utils/modal'
 const viewMode = ref('list')
 const currentStatus = ref('all')
 
+// 监听视图模式变化，发出事件通知父组件
+watch(viewMode, (newMode) => {
+    // 根据视图模式设置不同的分页大小
+    const size = newMode === 'list' ? 10 : 6 // 列表模式10条，网格模式6条
+    emit('view-mode-change', size)
+})
+
 const statusOptions = [
     { label: '全部', value: 'all' },
     { label: '规划中', value: 'planning' },
