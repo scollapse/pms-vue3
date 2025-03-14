@@ -56,7 +56,8 @@
                             <ProjectList :projects="projects" :is-loading="isProjectLoading"
                                 @edit-project="showEditProjectDialog" @delete-project="handleDeleteProject"
                                 @refresh="refreshProjectList" @status-change="handleStatusChange"
-                                @view-mode-change="handleProjectViewModeChange" />
+                                @view-mode-change="handleProjectViewModeChange"
+                                @project-options-update="loadProjectOptions" />
                         </div>
                         <pagination style="margin-top: 10px;" :load-data="loadProjects" :filters="projectFilters"
                             :size="projectSize" ref="projectPagination" />
@@ -278,7 +279,6 @@ const handleTaskSubmit = async (formData) => {
         if (res.success) {
             toast.show('success', `${taskFormMode.value === 'add' ? '新增' : '编辑'}任务成功`)
             refreshTaskList()
-            await loadProjectOptions() // 任务更新后重新加载项目选项
             
             // 如果是新增，清空表单；如果是编辑，保持当前数据
             if (taskFormMode.value === 'add') {
@@ -347,7 +347,6 @@ const handleProjectSubmit = async (formData) => {
         if (res.success) {
             toast.show('success', `${projectFormMode.value === 'add' ? '新增' : '编辑'}项目成功`)
             refreshProjectList()
-            await loadProjectOptions() // 项目更新后重新加载项目选项
             
             // 如果是新增，清空表单；如果是编辑，保持当前数据
             if (projectFormMode.value === 'add') {

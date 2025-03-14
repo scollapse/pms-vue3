@@ -334,6 +334,8 @@ const handleStartProject = (project) => {
             if (res.success) {
                 toast.show('success', '项目已开始')
                 emit('refresh')
+                // 触发项目选项更新事件
+                emit('project-options-update')
             } else {
                 toast.show('error', res.errorMessage || '操作失败')
             }
