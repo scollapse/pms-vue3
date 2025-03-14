@@ -626,15 +626,19 @@ const fetchTodayTasks = async () => {
           taskColumns.value[1].tasks.push(taskItem)
           tasks.value.push(task) // 同时更新今日待办
         } else if (task.status === 'completed') {
-          taskColumns.value[2].tasks.push(taskItem)
-          // 同时更新时间线数据
-          timelineEvents.value.push({
-            task: task.taskName,
-            time: dayjs(task.completionTime).format('HH:mm'),
-            completionTime: task.completionTime
-          })
-          // 根据完成时间正序排序
-          timelineEvents.value.sort((a, b) => new Date(a.completionTime) - new Date(b.completionTime))
+          // 同时更新时间线数据，只添加今天完成的任务
+          const completionDate = dayjs(task.completionTime).format('YYYY-MM-DD')
+          const today = dayjs().format('YYYY-MM-DD')
+          if (completionDate === today) {
+            taskColumns.value[2].tasks.push(taskItem)
+            timelineEvents.value.push({
+              task: task.taskName,
+              time: dayjs(task.completionTime).format('HH:mm'),
+              completionTime: task.completionTime
+            })
+            // 根据完成时间正序排序
+            timelineEvents.value.sort((a, b) => new Date(a.completionTime) - new Date(b.completionTime))
+          }
         }
       })
 
