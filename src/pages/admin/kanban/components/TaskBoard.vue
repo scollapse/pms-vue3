@@ -374,16 +374,17 @@ const activeFilter = ref('today')
 
 // 任务数据和加载状态
 const tasks = ref([])
+const weekTasks = ref([])
 const isTasksLoading = ref(false)
 
 // 分页相关 - 仅用于本周待办
 const currentPage = ref(1)
-const pageSize = 8
+const pageSize = 6
 const totalCount = ref(0)
 
 // 分页后的任务列表
 const paginatedTasks = computed(() => {
-  return tasks.value
+  return activeFilter.value === 'today' ? tasks.value : weekTasks.value
 })
 
 // 计算总页数 - 仅用于本周待办
@@ -444,8 +445,8 @@ const loadWeekTasks = async () => {
       status: 'wait,todo,in_progress'
     })
     if (res.success) {
-      // 重置其他数据
-      tasks.value = res.data
+      // 使用weekTasks存储本周待办数据
+      weekTasks.value = res.data
       totalCount.value = res.total
     }
   } catch (error) {
@@ -577,6 +578,9 @@ onMounted(() => {
     fetchStatistics()
     loadHeatmapData()
     fetchTodayTasks()
+    if (activeFilter.value === 'week') {
+      loadWeekTasks()
+    }
   })
 })
 
@@ -641,9 +645,6 @@ const fetchTodayTasks = async () => {
           }
         }
       })
-
-      // 更新总数
-      totalCount.value = tasks.value.length
     }
   } catch (error) {
     console.error('获取今日任务数据失败：', error)
