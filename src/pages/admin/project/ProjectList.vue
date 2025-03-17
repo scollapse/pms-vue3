@@ -177,14 +177,16 @@
                         </div>
                         <div class="flex items-center justify-center gap-2 text-sm">
                             <span class="text-gray-500">任务完成 : </span>
-                            <span class="text-gray-900">{{ project.completedTaskCount || 0 }}/{{ project.allTaskCount || 0 }}</span>
+                            <span class="text-gray-900">{{ project.completedTaskCount || 0 }}/{{ project.allTaskCount ||
+                    0 }}</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- 进度条（与底部边框重合） -->
                 <div class="absolute bottom-0 left-0 right-0 h-1 bg-gray-200 rounded-b-lg overflow-hidden">
-                    <div :class="[getProgressColor(getProjectProgress(project)), 'h-1']" :style="{ width: getProjectProgress(project) + '%' }"></div>
+                    <div :class="[getProgressColor(getProjectProgress(project)), 'h-1']"
+                        :style="{ width: getProjectProgress(project) + '%' }"></div>
                 </div>
                 <!-- 操作按钮 -->
                 <div class="flex items-center gap-2 mt-4  border-t border-gray-100">
@@ -215,7 +217,7 @@ import { defineProps, defineEmits, ref, watch } from 'vue'
 import { updateProject } from '@/api/admin/project'
 import toast from '@/composables/utils/toast'
 import modal from '@/composables/utils/modal'
-
+import eventBus from '@/composables/utils/eventBus'
 const viewMode = ref('list')
 const currentStatus = ref('all')
 
@@ -244,8 +246,8 @@ watch(() => currentStatus.value, (newStatus) => {
 const getProjectProgress = (project) => {
     // 如果有任务数据，则根据任务完成情况计算进度
 
-        return Math.round((project.completedTaskCount || 0) / project.allTaskCount * 100);
-    
+    return Math.round((project.completedTaskCount || 0) / project.allTaskCount * 100);
+
 }
 
 const props = defineProps({
@@ -336,6 +338,8 @@ const handleStartProject = (project) => {
                 emit('refresh')
                 // 触发项目选项更新事件
                 emit('project-options-update')
+                // 通知事件总线项目更新
+                eventBus.emit('project-updated')
             } else {
                 toast.show('error', res.errorMessage || '操作失败')
             }
@@ -357,6 +361,8 @@ const handlePauseProject = (project) => {
             if (res.success) {
                 toast.show('success', '项目已暂停')
                 emit('refresh')
+                // 通知事件总线项目更新
+                eventBus.emit('project-updated')
             } else {
                 toast.show('error', res.errorMessage || '操作失败')
             }
@@ -378,6 +384,8 @@ const handleFinishProject = (project) => {
             if (res.success) {
                 toast.show('success', '项目已完成')
                 emit('refresh')
+                // 通知事件总线项目更新
+                eventBus.emit('project-updated')
             } else {
                 toast.show('error', res.errorMessage || '操作失败')
             }
@@ -399,6 +407,8 @@ const handleDeprecateProject = (project) => {
             if (res.success) {
                 toast.show('success', '项目已废弃')
                 emit('refresh')
+                // 通知事件总线项目更新
+                eventBus.emit('project-updated')
             } else {
                 toast.show('error', res.errorMessage || '操作失败')
             }

@@ -484,7 +484,6 @@ const handleTaskAction = async (task, action) => {
     } else {
       const res = await updateTask({ taskId: task.taskId, status: status })
       if (res.success) {
-        console.log(res)
         toast.show('success', message)
       } else {
         toast.show('error', res.errorMessage || '操作失败')
@@ -574,7 +573,7 @@ onMounted(() => {
   fetchTodayTasks()
   
   // 监听任务更新事件，刷新看板数据
-  eventBus.on('task-updated', () => {
+  eventBus.on('task-updated', (projectId) => {
     fetchStatistics()
     loadHeatmapData()
     fetchTodayTasks()
@@ -593,7 +592,6 @@ onUnmounted(() => {
 
 // 统一获取今日任务数据
 const fetchTodayTasks = async () => {
-  console.log('fetchTodayTasks')
   isTasksLoading.value = true
   try {
     const res = await fetchTasks({

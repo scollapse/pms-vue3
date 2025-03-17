@@ -271,6 +271,8 @@ const clearTaskForm = () => {
         dateRange: ''
     }
 }
+
+// 任务提交
 const handleTaskSubmit = async (formData) => {
     isConfirmLoading.value = true
     try {
@@ -300,7 +302,7 @@ const handleTaskSubmit = async (formData) => {
                 eventBus.emit('tags-updated')
             }
             // 通过事件总线通知TaskBoard组件刷新数据
-            eventBus.emit('task-updated')
+            eventBus.emit('task-updated', formData.projectId)
         } else {
             toast.show('error', res.errorMessage || '操作失败')
         }
@@ -311,7 +313,9 @@ const handleTaskSubmit = async (formData) => {
         isConfirmLoading.value = false
     }
 }
-const handleDeleteTask = (taskId) => {
+
+// 删除任务
+const handleDeleteTask = (taskId,projectId) => {
     modal.showConfirm('确定要删除该任务吗？', async () => {
         try {
             const res = await deleteTask({ taskId })
@@ -319,7 +323,7 @@ const handleDeleteTask = (taskId) => {
                 toast.show('success', '删除任务成功')
                 refreshTaskList()
                 // 通过事件总线通知TaskBoard组件刷新数据
-                eventBus.emit('task-updated')
+                eventBus.emit('task-updated',projectId)
             } else {
                 toast.show('error', res.errorMessage)
             }
@@ -339,6 +343,7 @@ const showEditProjectDialog = async (projectId) => {
     }
 }
 
+//新增项目
 const handleProjectSubmit = async (formData) => {
     isConfirmLoading.value = true
     try {
@@ -361,6 +366,8 @@ const handleProjectSubmit = async (formData) => {
                 }
             }
             
+            // 通知ProjectBoard组件刷新项目列表
+            eventBus.emit('project-updated')
             // 通过事件总线通知TaskBoard组件刷新数据
             eventBus.emit('task-updated')
         } else {
