@@ -36,6 +36,7 @@
                     <div class="flex-grow flex flex-col">
                         <div class="flex-grow overflow-auto min-h-[600px]">
                             <TaskList :tasks="tasks" :is-loading="isTaskLoading"
+                                :project-options="projectOptions"
                                 @edit-task="showEditTaskDialog" @delete-task="handleDeleteTask" 
                                 @refresh="refreshTaskList" @status-change="handleTaskStatusChange"
                                 @view-mode-change="handleTaskViewModeChange" />
@@ -154,7 +155,7 @@ const loadProjectOptions = async () => {
         })
         if (res.success) {
             projectOptions.value = [
-                { projectId: '', projectName: '无' }, // 默认选项
+                { projectId: '-1', projectName: '无' }, // 默认选项
                 ...res.data.map(p => ({
                     projectId: p.projectId,
                     projectName: p.projectName
@@ -257,9 +258,13 @@ const handleDeleteTask = (taskId, projectId) => {
 }
 
 // 刷新列表
-const refreshTaskList = () => {
+const refreshTaskList = (filters = {}) => {
     if (taskPagination.value) {
-        taskPagination.value.refresh(taskFilters.value)
+        // 使用新对象替换整个 taskFilters，确保所有属性都被正确更新
+        taskFilters.value = { ...taskFilters.value, ...filters }
+        console.log('taskFilters.value', taskFilters.value)
+        // 使用最新的 taskFilters 进行查询
+        taskPagination.value.refresh({ ...taskFilters.value })
     }
 }
 
@@ -292,7 +297,7 @@ onMounted(async () => {
     // 监听项目选项更新事件
     eventBus.on('project-options-updated', (data) => {
         projectOptions.value = [
-            { projectId: '', projectName: '无' }, // 默认选项
+            { projectId: '-1', projectName: '无' }, // 默认选项
             ...data.map(p => ({
                 projectId: p.projectId,
                 projectName: p.projectName

@@ -221,10 +221,15 @@ const handleDeleteProject = (projectId) => {
 }
 
 // 刷新列表
-const refreshProjectList = () => {
+const refreshProjectList  = (filters = {}) => {
+
     if (projectPagination.value) {
+        // 使用Object.assign确保filters中的空值能正确覆盖taskFilters中的值
+        projectFilters.value = Object.assign({}, projectFilters.value, filters)
+        console.log('projectFilters.value', projectFilters.value)
         projectPagination.value.refresh(projectFilters.value)
     }
+
 }
 
 const clearProjectForm = (mode = 'add') => {

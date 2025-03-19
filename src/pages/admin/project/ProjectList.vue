@@ -13,6 +13,30 @@
                     {{ status.label }}
                 </button>
             </div>
+            <div class="flex items-center space-x-2">
+                <input
+                    type="text"
+                    v-model="searchFilters.projectName"
+                    placeholder="请输入项目名称"
+                    class="w-48 px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring focus:ring-gray-200 focus:border-gray-300 bg-gray-50"
+                />
+                <button
+                    @click="handleSearch"
+                    class="p-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 focus:ring-2 focus:ring-gray-200 transition-colors"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </button>
+                <button
+                    @click="handleReset"
+                    class="p-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 focus:ring-2 focus:ring-gray-200 transition-colors"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                </button>
+            </div>
             <div class="flex items-center space-x-3">
                 <div class="flex bg-gray-100 rounded-lg p-1">
                     <button @click="viewMode = 'list'" :class="[
@@ -417,5 +441,21 @@ const handleDeprecateProject = (project) => {
             toast.show('error', '操作失败')
         }
     })
+}
+
+
+const searchFilters = ref({
+    projectName: ''
+})
+
+// 搜索方法
+const handleSearch = () => {
+    emit('refresh', searchFilters.value)
+}
+
+// 重置方法
+const handleReset = () => {
+    searchFilters.value.projectName = ''
+    emit('refresh', searchFilters.value)
 }
 </script>

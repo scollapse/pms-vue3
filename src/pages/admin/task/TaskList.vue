@@ -2,6 +2,7 @@
     <div class="p-4 bg-white rounded-xl shadow-md h-full">
         <!-- 控制栏 -->
         <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+            <!-- 状态选择组件 -->
             <div class="flex space-x-2">
                 <button v-for="status in statusOptions" :key="status.value" @click="currentStatus = status.value"
                     :class="[
@@ -13,27 +14,60 @@
                     {{ status.label }}
                 </button>
             </div>
-            <div class="flex items-center space-x-3">
-                <div class="flex bg-gray-100 rounded-lg p-1">
-                    <button @click="viewMode = 'list'" :class="[
-                    'p-1.5 rounded transition-colors',
-                    viewMode === 'list' ? 'bg-purple-50 text-purple-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+
+            <!-- 搜索组件 -->
+            <div class="flex items-center space-x-2">
+                <input
+                    type="text"
+                    v-model="searchFilters.taskName"
+                    placeholder="请输入任务名称"
+                    class="w-48 px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring focus:ring-gray-200 focus:border-gray-300 bg-gray-50"
+                />
+                <select
+                    v-model="searchFilters.projectId"
+                    class="w-48 px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring focus:ring-gray-200 focus:border-gray-300 bg-gray-50"
+                >
+                    <option value="">所有项目</option>
+                    <option v-for="project in projectOptions" :key="project.projectId" :value="project.projectId">
+                        {{ project.projectName }}
+                    </option>
+                </select>
+                <button
+                    @click="handleSearch"
+                    class="p-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 focus:ring-2 focus:ring-gray-200 transition-colors"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </button>
+                <button
+                    @click="handleReset"
+                    class="p-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 focus:ring-2 focus:ring-gray-200 transition-colors"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- 视图切换组件 -->
+            <div class="flex bg-gray-100 rounded-lg p-1">
+                <button @click="viewMode = 'list'" :class="[
+                'p-1.5 rounded transition-colors',
+                viewMode === 'list' ? 'bg-purple-50 text-purple-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
                 ]">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
-                    <button @click="viewMode = 'grid'" :class="[
-                    'p-1.5 rounded transition-colors',
-                    viewMode === 'grid' ? 'bg-purple-50 text-purple-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <button @click="viewMode = 'grid'" :class="[
+                'p-1.5 rounded transition-colors',
+                viewMode === 'grid' ? 'bg-purple-50 text-purple-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
                 ]">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                        </svg>
-                    </button>
-                </div>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
+                </button>
             </div>
         </div>
 
@@ -73,18 +107,18 @@
                         </span>
                     </td>
                     <td class="px-4 py-2">
-                        <div class="flex flex-wrap gap-1">
-                            <el-tag v-for="tag in task.tags" :key="tag.id" size="small" class="mr-1">
+                        <div class="flex flex-wrap gap-1 max-w-[200px] overflow-hidden">
+                            <el-tag v-for="tag in task.tags" :key="tag.id" size="small" class="mr-1 whitespace-nowrap">
                                 {{ tag.name }}
                             </el-tag>
                             <span v-if="!task.tags || task.tags.length === 0" class="text-gray-400 text-xs">无标签</span>
                         </div>
                     </td>
-                    <td class="px-4 py-2">{{ task.estimateHours }}h</td>
-                    <td class="px-4 py-2">{{ formatDate(task.startTime) }}</td>
-                    <td class="px-4 py-2">{{ formatDate(task.endTime) }}</td>
-                    <td class="px-4 py-2">{{ formatDate(task.completionTime) }}</td>
-                    <td class="px-4 py-2">
+                    <td class="px-4 py-2 whitespace-nowrap">{{ task.estimateHours }}h</td>
+                    <td class="px-4 py-2 whitespace-nowrap">{{ formatDate(task.startTime) }}</td>
+                    <td class="px-4 py-2 whitespace-nowrap">{{ formatDate(task.endTime) }}</td>
+                    <td class="px-4 py-2 whitespace-nowrap">{{ formatDate(task.completionTime) }}</td>
+                    <td class="px-4 py-2 whitespace-nowrap">
                         <div class="flex items-center gap-2">
                             <!-- 编辑按钮 -->
                             <button v-if="['todo', 'in_progress', 'wait'].includes(task.status)" 
@@ -240,6 +274,10 @@ const props = defineProps({
     isLoading: {
         type: Boolean,
         default: false,
+    },
+    projectOptions: {
+        type: Array,
+        default: () => [],
     },
 })
 
@@ -416,5 +454,22 @@ const handleFinishTask = (task) => {
             toast.show('error', '操作失败')
         }
     })
+}
+
+const searchFilters = ref({
+    taskName: '',
+    projectId: ''
+})
+
+// 搜索方法
+const handleSearch = () => {
+    emit('refresh', searchFilters.value)
+}
+
+// 重置方法
+const handleReset = () => {
+    searchFilters.value.taskName = ''
+    searchFilters.value.projectId = ''
+    emit('refresh', searchFilters.value)
 }
 </script>
