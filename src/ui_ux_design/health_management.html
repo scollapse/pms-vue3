@@ -1,0 +1,1919 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健康管理模块 - 个人管理系统</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .glass {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        .section-preview {
+            border: 1px dashed #ccc;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 8px;
+        }
+
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(241, 242, 243, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(203, 213, 225, 0.8);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.8);
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen overflow-x-hidden p-6">
+    <h1 class="text-3xl font-bold text-indigo-900 mb-8 text-center">健康管理模块 - 界面预览</h1>
+
+    <!-- 身体素质管理模块 -->
+    <section class="mb-10">
+        <h2 class="text-2xl font-semibold text-indigo-800 mb-4">一、身体素质管理模块</h2>
+
+        <div class="flex flex-wrap">
+            <!-- 1. 体征概览页 预览 -->
+            <div class="section-preview w-full lg:w-1/2 p-4">
+                <h3 class="text-lg font-medium text-indigo-700 mb-3">1. 体征概览页</h3>
+
+                <div class="glass rounded-xl p-6 max-w-3xl mx-auto">
+                    <!-- 顶部日期显示 -->
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-indigo-900">身体素质概览</h2>
+                        <p class="text-indigo-600 font-medium">
+                            <i class="far fa-calendar-alt mr-2"></i>
+                            2023年5月15日 星期一
+                        </p>
+                    </div>
+
+                    <!-- 实时指标卡片 -->
+                    <div class="grid grid-cols-3 gap-4 mb-6">
+                        <div class="glass rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-indigo-900">体重</span>
+                                <i class="fas fa-weight text-indigo-600"></i>
+                            </div>
+                            <p class="text-2xl font-bold text-indigo-900">68.5 <span
+                                    class="text-sm font-normal">kg</span></p>
+                            <p class="text-xs text-green-600 mt-1">较上次 <span>↓0.5kg</span></p>
+                        </div>
+
+                        <div class="glass rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-indigo-900">体脂率</span>
+                                <i class="fas fa-percentage text-amber-600"></i>
+                            </div>
+                            <p class="text-2xl font-bold text-indigo-900">21.8<span class="text-sm font-normal">%</span>
+                            </p>
+                            <p class="text-xs text-green-600 mt-1">较上次 <span>↓0.3%</span></p>
+                        </div>
+
+                        <div class="glass rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-indigo-900">BMI</span>
+                                <i class="fas fa-calculator text-purple-600"></i>
+                            </div>
+                            <p class="text-2xl font-bold text-indigo-900">23.6</p>
+                            <p class="text-xs text-indigo-600 mt-1">健康范围 <span>18.5-24.9</span></p>
+                        </div>
+                    </div>
+
+                    <!-- 周趋势图 -->
+                    <div class="glass rounded-lg p-4 mb-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-medium text-indigo-900">周趋势图</h3>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-md text-sm">体重</button>
+                                <button class="px-3 py-1 bg-white/50 text-indigo-700 rounded-md text-sm">体脂率</button>
+                            </div>
+                        </div>
+
+                        <!-- 模拟折线图 -->
+                        <div class="h-48 relative">
+                            <div class="absolute bottom-0 left-0 right-0 h-px bg-gray-200"></div>
+                            <div class="absolute top-0 bottom-0 left-0 w-px bg-gray-200"></div>
+
+                            <!-- 体重折线图模拟 -->
+                            <svg class="w-full h-full">
+                                <polyline points="50,120 100,110 150,115 200,105 250,100 300,90 350,85" fill="none"
+                                    stroke="#6366F1" stroke-width="2" />
+                                <!-- 数据点 -->
+                                <circle cx="50" cy="120" r="4" fill="#6366F1" />
+                                <circle cx="100" cy="110" r="4" fill="#6366F1" />
+                                <circle cx="150" cy="115" r="4" fill="#6366F1" />
+                                <circle cx="200" cy="105" r="4" fill="#6366F1" />
+                                <circle cx="250" cy="100" r="4" fill="#6366F1" />
+                                <circle cx="300" cy="90" r="4" fill="#6366F1" />
+                                <circle cx="350" cy="85" r="4" fill="#6366F1" />
+                            </svg>
+
+                            <!-- X轴标签 -->
+                            <div class="flex justify-between text-xs text-indigo-700 px-10">
+                                <span>5/9</span>
+                                <span>5/10</span>
+                                <span>5/11</span>
+                                <span>5/12</span>
+                                <span>5/13</span>
+                                <span>5/14</span>
+                                <span>5/15</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 目标达成度 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="glass rounded-lg p-4">
+                            <h3 class="font-medium text-indigo-900 mb-3">目标达成度</h3>
+                            <div class="flex items-center justify-center">
+                                <!-- 模拟环形图 -->
+                                <div class="relative w-36 h-36">
+                                    <div class="absolute inset-0 rounded-full border-8 border-gray-200"></div>
+                                    <div
+                                        class="absolute inset-0 rounded-full border-8 border-indigo-500 border-t-transparent border-r-transparent border-b-transparent">
+                                    </div>
+                                    <div class="absolute inset-0 flex items-center justify-center flex-col">
+                                        <span class="text-2xl font-bold text-indigo-900">85%</span>
+                                        <span class="text-xs text-indigo-700">已达成</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-center text-sm text-indigo-700 mt-4">
+                                目标体重: <span class="font-medium">65.0kg</span>
+                            </p>
+                        </div>
+
+                        <div class="glass rounded-lg p-4">
+                            <h3 class="font-medium text-indigo-900 mb-3">其他指标</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span class="text-indigo-900">肌肉量</span>
+                                        <span class="text-indigo-700">32.5kg</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: 75%"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span class="text-indigo-900">水分率</span>
+                                        <span class="text-indigo-700">58.2%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-blue-500 h-2 rounded-full" style="width: 65%"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span class="text-indigo-900">骨量</span>
+                                        <span class="text-indigo-700">3.6kg</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-purple-500 h-2 rounded-full" style="width: 80%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 浮动按钮 -->
+                    <button
+                        class="fixed bottom-6 right-6 w-14 h-14 bg-indigo-600 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-indigo-700 transition-colors">
+                        <i class="fas fa-plus text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2. 数据录入页 预览 -->
+            <div class="section-preview w-full lg:w-1/2 p-4">
+                <h3 class="text-lg font-medium text-indigo-700 mb-3">2. 数据录入页</h3>
+
+                <div class="glass rounded-xl p-6 max-w-3xl mx-auto">
+                    <!-- 表单标题 -->
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-indigo-900">记录新体征数据</h2>
+                        <button
+                            class="p-2 rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <!-- 表单内容 -->
+                    <div class="space-y-6">
+                        <!-- 测量时间 -->
+                        <div>
+                            <label class="block text-sm font-medium text-indigo-900 mb-2">测量时间</label>
+                            <div class="relative">
+                                <i
+                                    class="far fa-calendar-alt absolute left-3 top-1/2 transform -translate-y-1/2 text-indigo-600"></i>
+                                <input type="datetime-local"
+                                    class="bg-white/60 w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                        </div>
+
+                        <!-- 体重 -->
+                        <div>
+                            <label class="block text-sm font-medium text-indigo-900 mb-2">体重 (kg)</label>
+                            <input type="number" step="0.1" placeholder="输入体重"
+                                class="bg-white/60 w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                value="68.5">
+                        </div>
+
+                        <!-- 体脂率 -->
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="block text-sm font-medium text-indigo-900">体脂率 (%)</label>
+                                <span class="text-indigo-600 font-medium">21.8%</span>
+                            </div>
+                            <input type="range" min="5" max="50" step="0.1" value="21.8"
+                                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                            <div class="flex justify-between text-xs text-indigo-700 mt-1">
+                                <span>5%</span>
+                                <span>50%</span>
+                            </div>
+                        </div>
+
+                        <!-- 肌肉量 -->
+                        <div>
+                            <label class="block text-sm font-medium text-indigo-900 mb-2">肌肉量 (kg)</label>
+                            <input type="number" step="0.1" placeholder="输入肌肉量"
+                                class="bg-white/60 w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                value="32.5">
+                        </div>
+
+                        <!-- 水分率 -->
+                        <div>
+                            <label class="block text-sm font-medium text-indigo-900 mb-2">水分率 (%)</label>
+                            <input type="number" step="0.1" placeholder="输入水分率"
+                                class="bg-white/60 w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                value="58.2">
+                            <div class="flex items-center mt-1">
+                                <span class="text-xs text-indigo-700">健康范围: 45% - 65%</span>
+                            </div>
+                        </div>
+
+                        <!-- 自动计算BMI -->
+                        <div class="glass bg-indigo-50/50 rounded-lg p-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-medium text-indigo-900">计算结果</h4>
+                                    <p class="text-sm text-indigo-700">基于您输入的数据</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-indigo-900">BMI: 23.6</p>
+                                    <p class="text-xs text-green-600">健康体重范围</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 表单按钮 -->
+                        <div class="flex space-x-4">
+                            <button
+                                class="flex-1 bg-white/60 text-indigo-700 py-3 rounded-lg border border-indigo-200 hover:bg-white transition-colors">
+                                取消
+                            </button>
+                            <button
+                                class="flex-1 bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-colors">
+                                保存数据
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 饮食管理模块会在确认后继续添加 -->
+    <!-- 饮食管理模块 -->
+    <section class="mb-10">
+        <h2 class="text-2xl font-semibold text-indigo-800 mb-4">二、饮食管理模块</h2>
+
+        <div class="flex flex-wrap">
+            <!-- 1. 饮食记录页 预览 -->
+            <div class="section-preview w-full lg:w-1/2 p-4">
+                <h3 class="text-lg font-medium text-indigo-700 mb-3">1. 饮食记录页</h3>
+
+                <div class="glass rounded-xl p-6 max-w-3xl mx-auto">
+                    <!-- 顶部导航 -->
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center space-x-2">
+                            <button
+                                class="p-2 rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <h2 class="text-xl font-semibold text-indigo-900">饮食记录</h2>
+                        </div>
+                        <div class="flex items-center">
+                            <p class="text-indigo-600 font-medium">
+                                <i class="far fa-calendar-alt mr-2"></i>
+                                2023年5月15日
+                            </p>
+                            <button
+                                class="ml-3 p-2 rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors">
+                                <i class="fas fa-calendar"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 营养素总计 -->
+                    <div class="glass bg-white/40 rounded-lg p-4 mb-6">
+                        <h3 class="font-medium text-indigo-900 mb-3">今日营养摄入</h3>
+                        <div class="grid grid-cols-4 gap-3">
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-indigo-900">热量</span>
+                                    <span class="text-indigo-700">1420/2200</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div class="bg-indigo-500 h-2.5 rounded-full" style="width: 65%"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-indigo-900">蛋白质</span>
+                                    <span class="text-indigo-700">68/90g</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div class="bg-amber-500 h-2.5 rounded-full" style="width: 75%"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-indigo-900">碳水</span>
+                                    <span class="text-indigo-700">160/275g</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div class="bg-green-500 h-2.5 rounded-full" style="width: 58%"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-indigo-900">脂肪</span>
+                                    <span class="text-indigo-700">45/70g</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div class="bg-rose-500 h-2.5 rounded-full" style="width: 65%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 额外营养素指标 -->
+                        <div class="mt-4 grid grid-cols-4 gap-3">
+                            <div class="text-center">
+                                <span class="text-xs text-indigo-700">纤维素</span>
+                                <p class="text-sm font-medium text-indigo-900">18/25g</p>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                    <div class="bg-blue-500 h-1.5 rounded-full" style="width: 72%"></div>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <span class="text-xs text-indigo-700">钙</span>
+                                <p class="text-sm font-medium text-indigo-900">720/1000mg</p>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                    <div class="bg-blue-500 h-1.5 rounded-full" style="width: 72%"></div>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <span class="text-xs text-indigo-700">铁</span>
+                                <p class="text-sm font-medium text-indigo-900">12/18mg</p>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                    <div class="bg-blue-500 h-1.5 rounded-full" style="width: 67%"></div>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <span class="text-xs text-indigo-700">维生素C</span>
+                                <p class="text-sm font-medium text-indigo-900">65/90mg</p>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                    <div class="bg-blue-500 h-1.5 rounded-full" style="width: 72%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 餐次时间轴 -->
+                    <div class="space-y-4">
+                        <!-- 早餐 -->
+                        <div class="glass rounded-lg p-4">
+                            <div class="flex justify-between items-center mb-3">
+                                <div class="flex items-center">
+                                    <div
+                                        class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center mr-3">
+                                        <i class="fas fa-coffee text-amber-600"></i>
+                                    </div>
+                                    <h4 class="font-medium text-indigo-900">早餐</h4>
+                                </div>
+                                <span class="text-sm text-indigo-700">07:30</span>
+                            </div>
+
+                            <div class="space-y-2 mb-3">
+                                <div class="flex justify-between items-center bg-white/50 rounded-lg p-2.5">
+                                    <div class="flex items-center">
+                                        <img src="https://images.unsplash.com/photo-1533442719432-5bbf3122e4c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8b2F0bWVhbHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=40&h=40&q=80"
+                                            class="w-10 h-10 rounded-md object-cover mr-3">
+                                        <div>
+                                            <p class="font-medium text-indigo-900">燕麦粥</p>
+                                            <p class="text-xs text-indigo-700/70">200g • 150千卡</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button
+                                            class="p-1.5 rounded bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors">
+                                            <i class="fas fa-pen text-xs"></i>
+                                        </button>
+                                        <button
+                                            class="p-1.5 rounded bg-rose-100 text-rose-700 hover:bg-rose-200 transition-colors">
+                                            <i class="fas fa-trash text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-between items-center bg-white/50 rounded-lg p-2.5">
+                                    <div class="flex items-center">
+                                        <img src="https://images.unsplash.com/photo-1557925923-cd4648e211a0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmFuYW5hfGVufDB8fDB8fHww&auto=format&fit=crop&w=40&h=40&q=80"
+                                            class="w-10 h-10 rounded-md object-cover mr-3">
+                                        <div>
+                                            <p class="font-medium text-indigo-900">香蕉</p>
+                                            <p class="text-xs text-indigo-700/70">100g • 89千卡</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button
+                                            class="p-1.5 rounded bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors">
+                                            <i class="fas fa-pen text-xs"></i>
+                                        </button>
+                                        <button
+                                            class="p-1.5 rounded bg-rose-100 text-rose-700 hover:bg-rose-200 transition-colors">
+                                            <i class="fas fa-trash text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button
+                                class="w-full py-2 bg-white/40 text-indigo-700 rounded-lg border border-dashed border-indigo-300 hover:bg-white/60 transition-colors flex items-center justify-center">
+                                <i class="fas fa-plus mr-2 text-sm"></i>
+                                <span class="text-sm">添加食物</span>
+                            </button>
+
+                            <div class="flex justify-between items-center mt-3 px-1 text-sm">
+                                <span class="text-indigo-700">总计</span>
+                                <span class="font-medium text-indigo-900">239千卡</span>
+                            </div>
+                        </div>
+
+                        <!-- 午餐 -->
+                        <div class="glass rounded-lg p-4">
+                            <div class="flex justify-between items-center mb-3">
+                                <div class="flex items-center">
+                                    <div
+                                        class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                                        <i class="fas fa-utensils text-green-600"></i>
+                                    </div>
+                                    <h4 class="font-medium text-indigo-900">午餐</h4>
+                                </div>
+                                <span class="text-sm text-indigo-700">12:15</span>
+                            </div>
+
+                            <div class="space-y-2 mb-3">
+                                <div class="flex justify-between items-center bg-white/50 rounded-lg p-2.5">
+                                    <div class="flex items-center">
+                                        <img src="https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2hpY2tlbiUyMHJpY2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=40&h=40&q=80"
+                                            class="w-10 h-10 rounded-md object-cover mr-3">
+                                        <div>
+                                            <p class="font-medium text-indigo-900">鸡胸肉饭</p>
+                                            <p class="text-xs text-indigo-700/70">300g • 450千卡</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button
+                                            class="p-1.5 rounded bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors">
+                                            <i class="fas fa-pen text-xs"></i>
+                                        </button>
+                                        <button
+                                            class="p-1.5 rounded bg-rose-100 text-rose-700 hover:bg-rose-200 transition-colors">
+                                            <i class="fas fa-trash text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-between items-center bg-white/50 rounded-lg p-2.5">
+                                    <div class="flex items-center">
+                                        <img src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YnJvY2NvbGl8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=40&h=40&q=80"
+                                            class="w-10 h-10 rounded-md object-cover mr-3">
+                                        <div>
+                                            <p class="font-medium text-indigo-900">西兰花</p>
+                                            <p class="text-xs text-indigo-700/70">150g • 45千卡</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button
+                                            class="p-1.5 rounded bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors">
+                                            <i class="fas fa-pen text-xs"></i>
+                                        </button>
+                                        <button
+                                            class="p-1.5 rounded bg-rose-100 text-rose-700 hover:bg-rose-200 transition-colors">
+                                            <i class="fas fa-trash text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button
+                                class="w-full py-2 bg-white/40 text-indigo-700 rounded-lg border border-dashed border-indigo-300 hover:bg-white/60 transition-colors flex items-center justify-center">
+                                <i class="fas fa-plus mr-2 text-sm"></i>
+                                <span class="text-sm">添加食物</span>
+                            </button>
+
+                            <div class="flex justify-between items-center mt-3 px-1 text-sm">
+                                <span class="text-indigo-700">总计</span>
+                                <span class="font-medium text-indigo-900">495千卡</span>
+                            </div>
+                        </div>
+
+                        <!-- 晚餐 -->
+                        <div class="glass rounded-lg p-4">
+                            <div class="flex justify-between items-center mb-3">
+                                <div class="flex items-center">
+                                    <div
+                                        class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3">
+                                        <i class="fas fa-moon text-indigo-600"></i>
+                                    </div>
+                                    <h4 class="font-medium text-indigo-900">晚餐</h4>
+                                </div>
+                                <span class="text-sm text-indigo-700">18:30</span>
+                            </div>
+
+                            <div class="space-y-2 mb-3">
+                                <div class="flex justify-between items-center bg-white/50 rounded-lg p-2.5">
+                                    <div class="flex items-center">
+                                        <img src="https://images.unsplash.com/photo-1673722214234-efa78f7ed49a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2FsbW9ufGVufDB8fDB8fHww&auto=format&fit=crop&w=40&h=40&q=80"
+                                            class="w-10 h-10 rounded-md object-cover mr-3">
+                                        <div>
+                                            <p class="font-medium text-indigo-900">三文鱼</p>
+                                            <p class="text-xs text-indigo-700/70">200g • 360千卡</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button
+                                            class="p-1.5 rounded bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors">
+                                            <i class="fas fa-pen text-xs"></i>
+                                        </button>
+                                        <button
+                                            class="p-1.5 rounded bg-rose-100 text-rose-700 hover:bg-rose-200 transition-colors">
+                                            <i class="fas fa-trash text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-between items-center bg-white/50 rounded-lg p-2.5">
+                                    <div class="flex items-center">
+                                        <img src="https://images.unsplash.com/photo-1589927986089-35812388d1f4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8c3dlZXQlMjBwb3RhdG98ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=40&h=40&q=80"
+                                            class="w-10 h-10 rounded-md object-cover mr-3">
+                                        <div>
+                                            <p class="font-medium text-indigo-900">红薯</p>
+                                            <p class="text-xs text-indigo-700/70">150g • 130千卡</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button
+                                            class="p-1.5 rounded bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors">
+                                            <i class="fas fa-pen text-xs"></i>
+                                        </button>
+                                        <button
+                                            class="p-1.5 rounded bg-rose-100 text-rose-700 hover:bg-rose-200 transition-colors">
+                                            <i class="fas fa-trash text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button
+                                class="w-full py-2 bg-white/40 text-indigo-700 rounded-lg border border-dashed border-indigo-300 hover:bg-white/60 transition-colors flex items-center justify-center">
+                                <i class="fas fa-plus mr-2 text-sm"></i>
+                                <span class="text-sm">添加食物</span>
+                            </button>
+
+                            <div class="flex justify-between items-center mt-3 px-1 text-sm">
+                                <span class="text-indigo-700">总计</span>
+                                <span class="font-medium text-indigo-900">490千卡</span>
+                            </div>
+                        </div>
+
+                        <!-- 加餐 -->
+                        <div class="glass rounded-lg p-4">
+                            <div class="flex justify-between items-center mb-3">
+                                <div class="flex items-center">
+                                    <div
+                                        class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                                        <i class="fas fa-cookie text-purple-600"></i>
+                                    </div>
+                                    <h4 class="font-medium text-indigo-900">加餐</h4>
+                                </div>
+                                <span class="text-sm text-indigo-700">15:45</span>
+                            </div>
+
+                            <div class="space-y-2 mb-3">
+                                <div class="flex justify-between items-center bg-white/50 rounded-lg p-2.5">
+                                    <div class="flex items-center">
+                                        <img src="https://images.unsplash.com/photo-1529892485617-25f63cd7b1e9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bnV0c3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=40&h=40&q=80"
+                                            class="w-10 h-10 rounded-md object-cover mr-3">
+                                        <div>
+                                            <p class="font-medium text-indigo-900">混合坚果</p>
+                                            <p class="text-xs text-indigo-700/70">30g • 180千卡</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button
+                                            class="p-1.5 rounded bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors">
+                                            <i class="fas fa-pen text-xs"></i>
+                                        </button>
+                                        <button
+                                            class="p-1.5 rounded bg-rose-100 text-rose-700 hover:bg-rose-200 transition-colors">
+                                            <i class="fas fa-trash text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button
+                                class="w-full py-2 bg-white/40 text-indigo-700 rounded-lg border border-dashed border-indigo-300 hover:bg-white/60 transition-colors flex items-center justify-center">
+                                <i class="fas fa-plus mr-2 text-sm"></i>
+                                <span class="text-sm">添加食物</span>
+                            </button>
+
+                            <div class="flex justify-between items-center mt-3 px-1 text-sm">
+                                <span class="text-indigo-700">总计</span>
+                                <span class="font-medium text-indigo-900">180千卡</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 水份摄入追踪 -->
+                    <div class="glass rounded-lg p-4 mt-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="font-medium text-indigo-900">今日水分摄入</h4>
+                            <span class="text-sm text-indigo-700">1600/2000ml</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3">
+                            <div class="bg-blue-500 h-3 rounded-full" style="width: 80%"></div>
+                        </div>
+                        <div class="flex items-center justify-between mt-3">
+                            <button
+                                class="p-2 rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <div class="flex space-x-1">
+                                <i class="fas fa-tint text-blue-500 text-xl"></i>
+                                <i class="fas fa-tint text-blue-500 text-xl"></i>
+                                <i class="fas fa-tint text-blue-500 text-xl"></i>
+                                <i class="fas fa-tint text-blue-500 text-xl"></i>
+                                <i class="fas fa-tint text-blue-500 text-xl"></i>
+                                <i class="fas fa-tint text-blue-500 text-xl"></i>
+                                <i class="fas fa-tint text-blue-500 text-xl"></i>
+                                <i class="fas fa-tint text-blue-500 text-xl"></i>
+                                <i class="fas fa-tint text-gray-300 text-xl"></i>
+                                <i class="fas fa-tint text-gray-300 text-xl"></i>
+                            </div>
+                            <button
+                                class="p-2 rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 食物库管理页 预览 -->
+            <div class="section-preview w-full lg:w-1/2 p-4">
+                <h3 class="text-lg font-medium text-indigo-700 mb-3">2. 食物库管理页</h3>
+
+                <div class="glass rounded-xl p-6 max-w-3xl mx-auto">
+                    <!-- 顶部标题与操作 -->
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-indigo-900">食物库管理</h2>
+                        <div class="flex space-x-2">
+                            <button
+                                class="px-3 py-1.5 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition-colors flex items-center">
+                                <i class="fas fa-plus mr-1.5"></i>
+                                新增食物
+                            </button>
+                            <button
+                                class="px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700 transition-colors flex items-center">
+                                <i class="fas fa-upload mr-1.5"></i>
+                                批量导入
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 搜索栏 -->
+                    <div class="flex space-x-3 mb-6">
+                        <div class="flex-1 relative">
+                            <i
+                                class="fas fa-search text-indigo-700 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                            <input type="text" placeholder="搜索食物名称或拼音首字母..."
+                                class="bg-white/60 w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <select
+                            class="bg-white/60 border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option>全部分类</option>
+                            <option>谷物类</option>
+                            <option>蔬菜类</option>
+                            <option>水果类</option>
+                            <option>肉蛋类</option>
+                            <option>奶制品</option>
+                            <option>坚果类</option>
+                            <option>零食甜点</option>
+                        </select>
+                    </div>
+
+                    <!-- 食物列表 -->
+                    <div class="bg-white/40 rounded-lg overflow-hidden mb-6">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr class="border-b border-indigo-100 bg-indigo-50/80">
+                                    <th
+                                        class="py-3 px-4 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">
+                                        食物名称</th>
+                                    <th
+                                        class="py-3 px-4 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">
+                                        热量(千卡/100g)</th>
+                                    <th
+                                        class="py-3 px-4 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">
+                                        蛋白质(g)</th>
+                                    <th
+                                        class="py-3 px-4 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">
+                                        碳水(g)</th>
+                                    <th
+                                        class="py-3 px-4 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">
+                                        脂肪(g)</th>
+                                    <th
+                                        class="py-3 px-4 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">
+                                        操作</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-indigo-100">
+                                <tr class="hover:bg-white/30">
+                                    <td class="py-3 px-4 text-sm text-indigo-900">燕麦片</td>
+                                    <td class="py-3 px-4 text-sm text-indigo-900">389</td>
+                                    <td class="py-3 px-4 text-sm text-indigo-900">13.5</td>
+                                    <td class="py-3 px-4 text-sm text-indigo-900">66.3</td>
+                                    <td class="py-3 px-4 text-sm text-indigo-900">6.9</td>
+                                    <td class="py-3 px-4">
+                                        <div class="flex space-x-2">
+                                            <button
+                                                class="p-1.5 rounded bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors">
+                                                <i class="fas fa-pen text-xs"></i>
+                                            </button>
+                                            <button
+                                                class="p-1.5 rounded bg-rose-100 text-rose-700 hover:bg-rose-200 transition-colors">
+                                                <i class="fas fa-trash text-xs"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="hover:bg-white/30">
+                                    <td class="py-3 px-4 text-sm text-indigo-900">鸡胸肉(熟)</td>
+                                    <td class="py-3 px-4 text-sm text-indigo-900">165</td>
+                                    <td class="py-3 px-4 text-sm text-indigo-900">31.0</td>
+                                    <td class="py-3 px-4 text-sm text-indigo-900">0</td>
+                                    <td class="py-3 px-4 text-sm text-indigo-900">3.6</td>
+                                    <td class="py-3 px-4">
+                                        <div class="flex space-x-2">
+                                            <button
+                                                class="p-1.5 rounded bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors">
+                                                <i class="fas fa-pen text-xs"></i>
+                                            </button>
+                                            <button
+                                                class="p-1.5 rounded bg-rose-100 text-rose-700 hover:bg-rose-200 transition-colors">
+                                                <i class="fas fa-trash text-xs"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="hover:bg-white/30">
+                                    <td class="py-3 px-4 text-sm text-indigo-900">西兰花</td>
+                                    <td class="py-3 px-4 text-sm text-indigo-900">34</td>
+                                    <td class="py-3 px-4 text-sm text-indigo-900">2.8</td>
+                                    <td class="py-3 px-4 text-sm text-indigo-900">6.6</td>
+                                    <td class="py-3 px-4 text-sm text-indigo-900">0.4</td>
+                                    <td class="py-3 px-4">
+                                        <div class="flex space-x-2">
+                                            <button
+                                                class="p-1.5 rounded bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors">
+                                                <i class="fas fa-pen text-xs"></i>
+                                            </button>
+                                            <button
+                                                class="p-1.5 rounded bg-rose-100 text-rose-700 hover:bg-rose-200 transition-colors">
+                                                <i class="fas fa-trash text-xs"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="hover:bg-white/30">
+                                    <td class="py-3 px-4 text-sm text-indigo-900">香蕉</td>
+                                    <td class="py-3 px-4 text-sm text-indigo-900">89</td>
+                                    <td class="py-3 px-4 text-sm text-indigo-900">1.1</td>
+                                    <td class="py-3 px-4 text-sm text-indigo-900">22.8</td>
+                                    <td class="py-3 px-4 text-sm text-indigo-900">0.3</td>
+                                    <td class="py-3 px-4">
+                                        <div class="flex space-x-2">
+                                            <button
+                                                class="p-1.5 rounded bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors">
+                                                <i class="fas fa-pen text-xs"></i>
+                                            </button>
+                                            <button
+                                                class="p-1.5 rounded bg-rose-100 text-rose-700 hover:bg-rose-200 transition-colors">
+                                                <i class="fas fa-trash text-xs"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="hover:bg-white/30">
+                                    <td class="py-3 px-4 text-sm text-indigo-900">三文鱼(烤)</td>
+                                    <td class="py-3 px-4 text-sm text-indigo-900">206</td>
+                                    <td class="py-3 px-4 text-sm text-indigo-900">22.1</td>
+                                    <td class="py-3 px-4 text-sm text-indigo-900">0</td>
+                                    <td class="py-3 px-4 text-sm text-indigo-900">13.4</td>
+                                    <td class="py-3 px-4">
+                                        <div class="flex space-x-2">
+                                            <button
+                                                class="p-1.5 rounded bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors">
+                                                <i class="fas fa-pen text-xs"></i>
+                                            </button>
+                                            <button
+                                                class="p-1.5 rounded bg-rose-100 text-rose-700 hover:bg-rose-200 transition-colors">
+                                                <i class="fas fa-trash text-xs"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 分页控件 -->
+                    <div class="flex justify-between items-center">
+                        <div class="text-sm text-indigo-700">
+                            显示 1-5 条，共 143 条
+                        </div>
+                        <div class="flex space-x-1">
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/50 text-indigo-700 hover:bg-white/70 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled>
+                                <i class="fas fa-chevron-left text-xs"></i>
+                            </button>
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-600 text-white">
+                                1
+                            </button>
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/50 text-indigo-700 hover:bg-white/70 transition-colors">
+                                2
+                            </button>
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/50 text-indigo-700 hover:bg-white/70 transition-colors">
+                                3
+                            </button>
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/50 text-indigo-700 hover:bg-white/70 transition-colors">
+                                <i class="fas fa-chevron-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 食物添加/编辑浮层 -->
+                    <div
+                        class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+                        <div class="glass rounded-xl p-6 max-w-lg w-full">
+                            <div class="flex justify-between items-center mb-6">
+                                <h3 class="text-xl font-semibold text-indigo-900">添加新食物</h3>
+                                <button
+                                    class="p-2 rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-indigo-900 mb-2">食物名称</label>
+                                    <input type="text" placeholder="输入食物名称"
+                                        class="bg-white/60 w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-indigo-900 mb-2">食物分类</label>
+                                    <select
+                                        class="bg-white/60 w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                        <option>谷物类</option>
+                                        <option>蔬菜类</option>
+                                        <option>水果类</option>
+                                        <option>肉蛋类</option>
+                                        <option>奶制品</option>
+                                        <option>坚果类</option>
+                                        <option>零食甜点</option>
+                                    </select>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-indigo-900 mb-2">热量
+                                            (千卡/100g)</label>
+                                        <input type="number" step="0.1" placeholder="0"
+                                            class="bg-white/60 w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-indigo-900 mb-2">蛋白质
+                                            (g/100g)</label>
+                                        <input type="number" step="0.1" placeholder="0"
+                                            class="bg-white/60 w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-indigo-900 mb-2">碳水化合物
+                                            (g/100g)</label>
+                                        <input type="number" step="0.1" placeholder="0"
+                                            class="bg-white/60 w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-indigo-900 mb-2">脂肪
+                                            (g/100g)</label>
+                                        <input type="number" step="0.1" placeholder="0"
+                                            class="bg-white/60 w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-indigo-900 mb-2">纤维素
+                                            (g/100g)</label>
+                                        <input type="number" step="0.1" placeholder="0"
+                                            class="bg-white/60 w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-indigo-900 mb-2">钠
+                                            (mg/100g)</label>
+                                        <input type="number" step="0.1" placeholder="0"
+                                            class="bg-white/60 w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-indigo-900 mb-2">备注</label>
+                                    <textarea placeholder="可选备注信息"
+                                        class="bg-white/60 w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 h-20"></textarea>
+                                </div>
+
+                                <div class="flex space-x-4 pt-4">
+                                    <button
+                                        class="flex-1 bg-white/60 text-indigo-700 py-3 rounded-lg border border-indigo-200 hover:bg-white transition-colors">
+                                        取消
+                                    </button>
+                                    <button
+                                        class="flex-1 bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-colors">
+                                        保存
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 数据分析看板 -->
+    <section class="mb-10">
+        <h2 class="text-2xl font-semibold text-indigo-800 mb-4">三、数据分析看板</h2>
+
+        <div class="flex flex-wrap">
+            <!-- 1. 综合趋势页 预览 -->
+            <div class="section-preview w-full lg:w-1/2 p-4">
+                <h3 class="text-lg font-medium text-indigo-700 mb-3">1. 综合趋势页</h3>
+
+                <div class="glass rounded-xl p-6 max-w-3xl mx-auto">
+                    <!-- 顶部标题与时间选择 -->
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-indigo-900">综合趋势分析</h2>
+                        <div class="flex items-center space-x-3">
+                            <div class="flex">
+                                <button
+                                    class="px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-l-lg text-sm hover:bg-indigo-200 transition-colors">
+                                    周
+                                </button>
+                                <button
+                                    class="px-3 py-1.5 bg-indigo-600 text-white text-sm hover:bg-indigo-700 transition-colors">
+                                    月
+                                </button>
+                                <button
+                                    class="px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-r-lg text-sm hover:bg-indigo-200 transition-colors">
+                                    年
+                                </button>
+                            </div>
+                            <button
+                                class="p-2 rounded-lg bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors">
+                                <i class="fas fa-calendar-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 日期范围显示 -->
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center space-x-3">
+                            <button
+                                class="p-2 rounded-lg bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <h3 class="font-medium text-indigo-900">2023年5月</h3>
+                            <button
+                                class="p-2 rounded-lg bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        <button
+                            class="px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-lg text-sm hover:bg-indigo-200 transition-colors flex items-center">
+                            <i class="fas fa-download mr-1.5"></i> 导出数据
+                        </button>
+                    </div>
+
+                    <!-- 体重和体脂率趋势图 -->
+                    <div class="glass rounded-lg p-4 mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-medium text-indigo-900">体重和体脂率趋势</h3>
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-indigo-500 rounded-full mr-1.5"></div>
+                                    <span class="text-xs text-indigo-900">体重</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-amber-500 rounded-full mr-1.5"></div>
+                                    <span class="text-xs text-indigo-900">体脂率</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 模拟双轴折线图 -->
+                        <div class="h-64 relative">
+                            <div class="absolute bottom-0 left-0 right-0 h-px bg-gray-200"></div>
+                            <div class="absolute top-0 bottom-0 left-0 w-px bg-gray-200"></div>
+
+                            <!-- 体重折线图模拟 -->
+                            <svg class="w-full h-full">
+                                <!-- Y轴标签 - 左侧体重 -->
+                                <text x="5" y="20" class="text-xs fill-indigo-900">75kg</text>
+                                <text x="5" y="80" class="text-xs fill-indigo-900">70kg</text>
+                                <text x="5" y="140" class="text-xs fill-indigo-900">65kg</text>
+                                <text x="5" y="200" class="text-xs fill-indigo-900">60kg</text>
+
+                                <!-- Y轴标签 - 右侧体脂率 -->
+                                <text x="95%" y="20" class="text-xs fill-indigo-900">30%</text>
+                                <text x="95%" y="80" class="text-xs fill-indigo-900">25%</text>
+                                <text x="95%" y="140" class="text-xs fill-indigo-900">20%</text>
+                                <text x="95%" y="200" class="text-xs fill-indigo-900">15%</text>
+
+                                <!-- 体重折线 -->
+                                <polyline
+                                    points="40,130 80,125 120,120 160,115 200,110 240,105 280,100 320,95 360,90 400,85 440,90 480,85"
+                                    fill="none" stroke="#6366F1" stroke-width="2" />
+
+                                <!-- 体脂率折线 -->
+                                <polyline
+                                    points="40,110 80,115 120,113 160,110 200,105 240,108 280,100 320,98 360,95 400,90 440,92 480,88"
+                                    fill="none" stroke="#F59E0B" stroke-width="2" stroke-dasharray="4" />
+
+                                <!-- 关键点标注 -->
+                                <circle cx="320" cy="95" r="5" fill="#6366F1" />
+                                <circle cx="320" cy="98" r="5" fill="#F59E0B" />
+
+                            </svg>
+
+                            <!-- X轴标签 -->
+                            <div class="flex justify-between text-xs text-indigo-700 px-10">
+                                <span>1日</span>
+                                <span>5日</span>
+                                <span>10日</span>
+                                <span>15日</span>
+                                <span>20日</span>
+                                <span>25日</span>
+                                <span>30日</span>
+                            </div>
+                        </div>
+
+                        <!-- 关键节点标注 -->
+                        <div class="mt-4 p-3 bg-indigo-50/70 rounded-lg">
+                            <div class="flex items-start space-x-3">
+                                <div class="bg-indigo-100 p-2 rounded-full">
+                                    <i class="fas fa-info-circle text-indigo-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-indigo-900">5月15日 - 体重显著下降</p>
+                                    <p class="text-xs text-indigo-700/70">
+                                        体重下降1.2kg，同时体脂率下降0.8%。这一天的饮食记录显示摄入热量为1850千卡，相比平均值减少了350千卡。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 营养素摄入趋势 -->
+                    <div class="glass rounded-lg p-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-medium text-indigo-900">营养素摄入趋势</h3>
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-green-500 rounded-sm mr-1.5"></div>
+                                    <span class="text-xs text-indigo-900">碳水</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-amber-500 rounded-sm mr-1.5"></div>
+                                    <span class="text-xs text-indigo-900">蛋白质</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-rose-500 rounded-sm mr-1.5"></div>
+                                    <span class="text-xs text-indigo-900">脂肪</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 柱状图模拟 -->
+                        <div class="h-64 relative">
+                            <div class="absolute bottom-0 left-0 right-0 h-px bg-gray-200"></div>
+                            <div class="absolute top-0 bottom-0 left-0 w-px bg-gray-200"></div>
+
+                            <div class="flex items-end h-full pt-5 pb-1">
+                                <!-- 分组柱状图 -->
+                                <div class="flex-1 flex justify-center items-end space-x-1">
+                                    <div class="w-5 bg-green-500 rounded-t" style="height: 60%"></div>
+                                    <div class="w-5 bg-amber-500 rounded-t" style="height: 40%"></div>
+                                    <div class="w-5 bg-rose-500 rounded-t" style="height: 20%"></div>
+                                </div>
+
+                                <div class="flex-1 flex justify-center items-end space-x-1">
+                                    <div class="w-5 bg-green-500 rounded-t" style="height: 65%"></div>
+                                    <div class="w-5 bg-amber-500 rounded-t" style="height: 35%"></div>
+                                    <div class="w-5 bg-rose-500 rounded-t" style="height: 25%"></div>
+                                </div>
+
+                                <div class="flex-1 flex justify-center items-end space-x-1">
+                                    <div class="w-5 bg-green-500 rounded-t" style="height: 70%"></div>
+                                    <div class="w-5 bg-amber-500 rounded-t" style="height: 45%"></div>
+                                    <div class="w-5 bg-rose-500 rounded-t" style="height: 20%"></div>
+                                </div>
+
+                                <div class="flex-1 flex justify-center items-end space-x-1">
+                                    <div class="w-5 bg-green-500 rounded-t" style="height: 55%"></div>
+                                    <div class="w-5 bg-amber-500 rounded-t" style="height: 50%"></div>
+                                    <div class="w-5 bg-rose-500 rounded-t" style="height: 30%"></div>
+                                </div>
+
+                                <div class="flex-1 flex justify-center items-end space-x-1">
+                                    <div class="w-5 bg-green-500 rounded-t" style="height: 45%"></div>
+                                    <div class="w-5 bg-amber-500 rounded-t" style="height: 55%"></div>
+                                    <div class="w-5 bg-rose-500 rounded-t" style="height: 35%"></div>
+                                </div>
+
+                                <div class="flex-1 flex justify-center items-end space-x-1">
+                                    <div class="w-5 bg-green-500 rounded-t" style="height: 50%"></div>
+                                    <div class="w-5 bg-amber-500 rounded-t" style="height: 45%"></div>
+                                    <div class="w-5 bg-rose-500 rounded-t" style="height: 20%"></div>
+                                </div>
+
+                                <div class="flex-1 flex justify-center items-end space-x-1">
+                                    <div class="w-5 bg-green-500 rounded-t" style="height: 40%"></div>
+                                    <div class="w-5 bg-amber-500 rounded-t" style="height: 60%"></div>
+                                    <div class="w-5 bg-rose-500 rounded-t" style="height: 25%"></div>
+                                </div>
+                            </div>
+
+                            <!-- X轴标签 -->
+                            <div class="flex justify-between text-xs text-indigo-700 px-10">
+                                <span>周一</span>
+                                <span>周二</span>
+                                <span>周三</span>
+                                <span>周四</span>
+                                <span>周五</span>
+                                <span>周六</span>
+                                <span>周日</span>
+                            </div>
+                        </div>
+
+                        <!-- 平均值标记 -->
+                        <div class="mt-2 flex justify-around">
+                            <div class="text-center">
+                                <p class="text-xs text-indigo-700">碳水平均</p>
+                                <p class="text-sm font-medium text-indigo-900">168g/天</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-xs text-indigo-700">蛋白质平均</p>
+                                <p class="text-sm font-medium text-indigo-900">78g/天</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-xs text-indigo-700">脂肪平均</p>
+                                <p class="text-sm font-medium text-indigo-900">52g/天</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-xs text-indigo-700">总热量平均</p>
+                                <p class="text-sm font-medium text-indigo-900">1950千卡</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 营养达标页 预览 -->
+            <div class="section-preview w-full lg:w-1/2 p-4">
+                <h3 class="text-lg font-medium text-indigo-700 mb-3">2. 营养达标页</h3>
+
+                <div class="glass rounded-xl p-6 max-w-3xl mx-auto">
+                    <!-- 顶部标题 -->
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-indigo-900">营养达标分析</h2>
+                        <div class="flex space-x-2">
+                            <button
+                                class="px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700 transition-colors">
+                                本周
+                            </button>
+                            <button
+                                class="px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-lg text-sm hover:bg-indigo-200 transition-colors">
+                                本月
+                            </button>
+                        </div>
+                    </div>
+                    <!-- 日目标对比卡片 -->
+                    <div class="glass rounded-lg p-5 mb-6">
+                        <h3 class="font-medium text-indigo-900 mb-4">日均营养素摄入达标情况</h3>
+                        <div class="space-y-5">
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-amber-500 rounded-full mr-2"></div>
+                                        <span class="text-sm text-indigo-900">蛋白质</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-indigo-900">78g / 90g</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-3 relative">
+                                    <div class="bg-amber-500 h-3 rounded-full" style="width: 87%"></div>
+                                    <div
+                                        class="absolute right-0 top-0 bottom-0 border-l-2 border-indigo-600 border-dashed">
+                                    </div>
+                                </div>
+                                <div class="flex justify-between text-xs mt-1">
+                                    <span class="text-amber-700">87% 达标</span>
+                                    <span class="text-indigo-700">推荐: 1.2g/kg 体重</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                                        <span class="text-sm text-indigo-900">碳水化合物</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-indigo-900">168g / 275g</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-3 relative">
+                                    <div class="bg-green-500 h-3 rounded-full" style="width: 61%"></div>
+                                    <div
+                                        class="absolute right-0 top-0 bottom-0 border-l-2 border-indigo-600 border-dashed">
+                                    </div>
+                                </div>
+                                <div class="flex justify-between text-xs mt-1">
+                                    <span class="text-green-700">61% 达标</span>
+                                    <span class="text-indigo-700">推荐: 45-65% 总热量</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-rose-500 rounded-full mr-2"></div>
+                                        <span class="text-sm text-indigo-900">脂肪</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-indigo-900">52g / 70g</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-3 relative">
+                                    <div class="bg-rose-500 h-3 rounded-full" style="width: 74%"></div>
+                                    <div
+                                        class="absolute right-0 top-0 bottom-0 border-l-2 border-indigo-600 border-dashed">
+                                    </div>
+                                </div>
+                                <div class="flex justify-between text-xs mt-1">
+                                    <span class="text-rose-700">74% 达标</span>
+                                    <span class="text-indigo-700">推荐: 20-35% 总热量</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                                        <span class="text-sm text-indigo-900">纤维素</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-indigo-900">18g / 25g</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-3 relative">
+                                    <div class="bg-blue-500 h-3 rounded-full" style="width: 72%"></div>
+                                    <div
+                                        class="absolute right-0 top-0 bottom-0 border-l-2 border-indigo-600 border-dashed">
+                                    </div>
+                                </div>
+                                <div class="flex justify-between text-xs mt-1">
+                                    <span class="text-blue-700">72% 达标</span>
+                                    <span class="text-indigo-700">推荐: 每日25-30g</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 营养素来源与均衡性分析 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- 周均值雷达图 -->
+                        <div class="glass rounded-lg p-4">
+                            <h3 class="font-medium text-indigo-900 mb-4">营养均衡分析</h3>
+                            <div class="h-64 relative flex items-center justify-center">
+                                <!-- 模拟雷达图 - 使用SVG实现 -->
+                                <svg class="w-56 h-56" viewBox="0 0 200 200">
+                                    <!-- 背景六边形 -->
+                                    <polygon points="100,10 180,50 180,150 100,190 20,150 20,50" fill="none"
+                                        stroke="#E2E8F0" stroke-width="1" />
+                                    <polygon points="100,40 140,65 140,125 100,150 60,125 60,65" fill="none"
+                                        stroke="#E2E8F0" stroke-width="1" />
+                                    <polygon points="100,70 120,80 120,120 100,130 80,120 80,80" fill="none"
+                                        stroke="#E2E8F0" stroke-width="1" />
+
+                                    <!-- 连接线 -->
+                                    <line x1="100" y1="10" x2="100" y2="190" stroke="#E2E8F0" stroke-width="1" />
+                                    <line x1="20" y1="50" x2="180" y2="150" stroke="#E2E8F0" stroke-width="1" />
+                                    <line x1="20" y1="150" x2="180" y2="50" stroke="#E2E8F0" stroke-width="1" />
+
+                                    <!-- 实际数据多边形 -->
+                                    <polygon points="100,40 150,70 160,130 100,160 40,130 50,70"
+                                        fill="rgba(99, 102, 241, 0.2)" stroke="#6366F1" stroke-width="2" />
+
+                                    <!-- 标签 -->
+                                    <text x="100" y="5" text-anchor="middle" class="text-xs fill-indigo-700">蛋白质</text>
+                                    <text x="190" y="50" text-anchor="start" class="text-xs fill-indigo-700">碳水</text>
+                                    <text x="190" y="155" text-anchor="start" class="text-xs fill-indigo-700">脂肪</text>
+                                    <text x="100" y="198" text-anchor="middle"
+                                        class="text-xs fill-indigo-700">纤维素</text>
+                                    <text x="10" y="155" text-anchor="end" class="text-xs fill-indigo-700">维生素</text>
+                                    <text x="10" y="50" text-anchor="end" class="text-xs fill-indigo-700">矿物质</text>
+                                </svg>
+                            </div>
+
+                            <div class="text-center text-sm">
+                                <p class="text-indigo-900 mb-1">营养平衡度评分</p>
+                                <div class="inline-flex items-center justify-center">
+                                    <span class="text-2xl font-bold text-indigo-600 mr-1">78</span>
+                                    <span class="text-xs text-indigo-700">/100</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 营养素来源分布 -->
+                        <div class="glass rounded-lg p-4">
+                            <h3 class="font-medium text-indigo-900 mb-4">蛋白质来源分布</h3>
+                            <div class="h-52 relative flex items-center justify-center">
+                                <!-- 模拟饼图 - 使用SVG实现 -->
+                                <svg class="w-48 h-48" viewBox="0 0 100 100">
+                                    <!-- 背景圆 -->
+                                    <circle cx="50" cy="50" r="45" fill="#E2E8F0" />
+
+                                    <!-- 实际数据扇形 -->
+                                    <path d="M50,50 L95,50 A45,45 0 0,1 73,90 z" fill="#6366F1" />
+                                    <path d="M50,50 L73,90 A45,45 0 0,1 15,67 z" fill="#10B981" />
+                                    <path d="M50,50 L15,67 A45,45 0 0,1 5,30 z" fill="#F59E0B" />
+                                    <path d="M50,50 L5,30 A45,45 0 0,1 50,5 L50,50 z" fill="#EC4899" />
+                                    <path d="M50,50 L50,5 A45,45 0 0,1 95,50 z" fill="#8B5CF6" />
+
+                                    <!-- 中间圆形,制作环形图效果 -->
+                                    <circle cx="50" cy="50" r="20" fill="white" />
+                                </svg>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-2 mt-2">
+                                <div class="flex items-center space-x-1">
+                                    <div class="w-3 h-3 bg-indigo-500 rounded-full"></div>
+                                    <span class="text-xs text-indigo-900">肉类 35%</span>
+                                </div>
+                                <div class="flex items-center space-x-1">
+                                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                    <span class="text-xs text-indigo-900">鱼类 25%</span>
+                                </div>
+                                <div class="flex items-center space-x-1">
+                                    <div class="w-3 h-3 bg-amber-500 rounded-full"></div>
+                                    <span class="text-xs text-indigo-900">豆类 20%</span>
+                                </div>
+                                <div class="flex items-center space-x-1">
+                                    <div class="w-3 h-3 bg-pink-500 rounded-full"></div>
+                                    <span class="text-xs text-indigo-900">蛋类 15%</span>
+                                </div>
+                                <div class="flex items-center space-x-1">
+                                    <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                                    <span class="text-xs text-indigo-900">奶制品 5%</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 flex justify-between items-center">
+                                <div class="text-center">
+                                    <span class="text-xs text-indigo-700">动物蛋白</span>
+                                    <p class="text-sm font-medium text-indigo-900">80%</p>
+                                </div>
+                                <div class="h-10 w-px bg-gray-200"></div>
+                                <div class="text-center">
+                                    <span class="text-xs text-indigo-700">植物蛋白</span>
+                                    <p class="text-sm font-medium text-indigo-900">20%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 营养素摄入建议 -->
+                    <div class="glass rounded-lg p-4 mt-6">
+                        <h3 class="font-medium text-indigo-900 mb-4">营养摄入建议</h3>
+
+                        <div class="bg-indigo-50/70 rounded-lg p-4">
+                            <div class="flex items-start space-x-3">
+                                <div class="bg-indigo-100 p-2 rounded-full mt-1">
+                                    <i class="fas fa-lightbulb text-indigo-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-indigo-900 mb-2">根据您的数据分析</p>
+                                    <ul class="space-y-2 text-sm text-indigo-800">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check-circle text-green-500 mt-0.5 mr-2"></i>
+                                            <span>蛋白质摄入良好，建议继续保持当前水平，可适当提高植物蛋白的比例</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-exclamation-circle text-amber-500 mt-0.5 mr-2"></i>
+                                            <span>碳水摄入偏低，建议增加全谷物、水果等优质碳水来源</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check-circle text-green-500 mt-0.5 mr-2"></i>
+                                            <span>脂肪摄入合理，但可增加不饱和脂肪酸(鱼油、坚果、橄榄油)的摄入</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-exclamation-circle text-amber-500 mt-0.5 mr-2"></i>
+                                            <span>纤维素摄入略低，建议增加深色蔬菜和豆类的摄入量</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 自定义功能扩展 -->
+    <section class="mb-10">
+        <h2 class="text-2xl font-semibold text-indigo-800 mb-4">四、自定义功能扩展</h2>
+
+        <div class="flex flex-wrap">
+            <!-- 1. 运动记录与建议 -->
+            <div class="section-preview w-full lg:w-1/2 p-4">
+                <h3 class="text-lg font-medium text-indigo-700 mb-3">1. 运动记录与建议</h3>
+
+                <div class="glass rounded-xl p-6 max-w-3xl mx-auto">
+                    <!-- 顶部标题 -->
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-indigo-900">运动记录</h2>
+                        <button
+                            class="px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700 transition-colors flex items-center">
+                            <i class="fas fa-plus mr-1.5"></i> 添加运动
+                        </button>
+                    </div>
+
+                    <!-- 运动消耗统计 -->
+                    <div class="glass bg-white/40 rounded-lg p-4 mb-6">
+                        <h3 class="font-medium text-indigo-900 mb-3">本周运动消耗</h3>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="bg-white/50 rounded-lg p-3 text-center">
+                                <p class="text-sm text-indigo-700">活动时长</p>
+                                <p class="text-2xl font-bold text-indigo-900">4.5<span
+                                        class="text-sm font-normal">小时</span></p>
+                                <p class="text-xs text-green-600 mt-1">较上周 <span>↑0.5h</span></p>
+                            </div>
+
+                            <div class="bg-white/50 rounded-lg p-3 text-center">
+                                <p class="text-sm text-indigo-700">消耗热量</p>
+                                <p class="text-2xl font-bold text-indigo-900">1860<span
+                                        class="text-sm font-normal">千卡</span></p>
+                                <p class="text-xs text-green-600 mt-1">较上周 <span>↑210千卡</span></p>
+                            </div>
+
+                            <div class="bg-white/50 rounded-lg p-3 text-center">
+                                <p class="text-sm text-indigo-700">活动次数</p>
+                                <p class="text-2xl font-bold text-indigo-900">6<span
+                                        class="text-sm font-normal">次</span></p>
+                                <p class="text-xs text-green-600 mt-1">较上周 <span>↑1次</span></p>
+                            </div>
+                        </div>
+
+                        <!-- 每日活动量图表 -->
+                        <div class="mt-4 h-28">
+                            <div class="flex justify-between items-end h-full">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-8 bg-indigo-200 rounded-t-md" style="height: 30%"></div>
+                                    <p class="text-xs text-indigo-700 mt-1">一</p>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-8 bg-indigo-400 rounded-t-md" style="height: 70%"></div>
+                                    <p class="text-xs text-indigo-700 mt-1">二</p>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-8 bg-indigo-200 rounded-t-md" style="height: 40%"></div>
+                                    <p class="text-xs text-indigo-700 mt-1">三</p>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-8 bg-indigo-500 rounded-t-md" style="height: 80%"></div>
+                                    <p class="text-xs text-indigo-700 mt-1">四</p>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-8 bg-indigo-300 rounded-t-md" style="height: 60%"></div>
+                                    <p class="text-xs text-indigo-700 mt-1">五</p>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-8 bg-indigo-600 rounded-t-md" style="height: 90%"></div>
+                                    <p class="text-xs text-indigo-700 mt-1">六</p>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-8 bg-indigo-200 rounded-t-md" style="height: 35%"></div>
+                                    <p class="text-xs text-indigo-700 mt-1">日</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 运动记录列表 -->
+                    <div class="space-y-4 mb-6">
+                        <div class="glass rounded-lg p-4">
+                            <div class="flex justify-between items-center mb-3">
+                                <div class="flex items-start space-x-3">
+                                    <div class="bg-indigo-100 p-2.5 rounded-full mt-1">
+                                        <i class="fas fa-running text-indigo-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-indigo-900">慢跑</h4>
+                                        <p class="text-xs text-indigo-700/70">5月15日 · 06:30 · 30分钟</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-medium text-indigo-900">320<span
+                                            class="text-sm font-normal">千卡</span></p>
+                                    <p class="text-xs text-indigo-700">5.2公里</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-between text-xs">
+                                <div class="flex space-x-2">
+                                    <span class="px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full">有氧</span>
+                                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full">户外</span>
+                                </div>
+                                <button class="text-indigo-600 hover:text-indigo-800">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="glass rounded-lg p-4">
+                            <div class="flex justify-between items-center mb-3">
+                                <div class="flex items-start space-x-3">
+                                    <div class="bg-purple-100 p-2.5 rounded-full mt-1">
+                                        <i class="fas fa-dumbbell text-purple-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-indigo-900">力量训练</h4>
+                                        <p class="text-xs text-indigo-700/70">5月14日 · 19:00 · 45分钟</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-medium text-indigo-900">280<span
+                                            class="text-sm font-normal">千卡</span></p>
+                                    <p class="text-xs text-indigo-700">上肢训练</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-between text-xs">
+                                <div class="flex space-x-2">
+                                    <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded-full">力量</span>
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full">室内</span>
+                                </div>
+                                <button class="text-indigo-600 hover:text-indigo-800">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="glass rounded-lg p-4">
+                            <div class="flex justify-between items-center mb-3">
+                                <div class="flex items-start space-x-3">
+                                    <div class="bg-blue-100 p-2.5 rounded-full mt-1">
+                                        <i class="fas fa-biking text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-indigo-900">骑行</h4>
+                                        <p class="text-xs text-indigo-700/70">5月13日 · 17:30 · 60分钟</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-medium text-indigo-900">450<span
+                                            class="text-sm font-normal">千卡</span></p>
+                                    <p class="text-xs text-indigo-700">15公里</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-between text-xs">
+                                <div class="flex space-x-2">
+                                    <span class="px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full">有氧</span>
+                                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full">户外</span>
+                                </div>
+                                <button class="text-indigo-600 hover:text-indigo-800">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 运动建议 -->
+                    <div class="glass rounded-lg p-4">
+                        <h3 class="font-medium text-indigo-900 mb-3">个性化运动建议</h3>
+                        <div class="bg-indigo-50/70 rounded-lg p-4">
+                            <div class="flex items-start space-x-3">
+                                <div class="bg-indigo-100 p-2 rounded-full mt-1">
+                                    <i class="fas fa-heartbeat text-indigo-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-indigo-900 mb-2">根据您的体征和训练记录</p>
+                                    <ul class="space-y-2 text-sm text-indigo-800">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check-circle text-green-500 mt-0.5 mr-2"></i>
+                                            <span>建议每周保持4-5次中等强度有氧运动，每次30-45分钟</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-exclamation-circle text-amber-500 mt-0.5 mr-2"></i>
+                                            <span>您的力量训练偏少，建议每周增加2-3次全身力量训练</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-info-circle text-blue-500 mt-0.5 mr-2"></i>
+                                            <span>结合您的目标，当前消耗热量与摄入差值为300千卡/天，处于健康减脂区间</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 睡眠跟踪页面 -->
+            <div class="section-preview w-full lg:w-1/2 p-4">
+                <h3 class="text-lg font-medium text-indigo-700 mb-3">2. 睡眠跟踪</h3>
+
+                <div class="glass rounded-xl p-6 max-w-3xl mx-auto">
+                    <!-- 顶部标题 -->
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-indigo-900">睡眠质量监测</h2>
+                        <button
+                            class="px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700 transition-colors flex items-center">
+                            <i class="fas fa-plus mr-1.5"></i> 记录睡眠
+                        </button>
+                    </div>
+
+                    <!-- 睡眠概览 -->
+                    <div class="glass bg-white/40 rounded-lg p-4 mb-6">
+                        <h3 class="font-medium text-indigo-900 mb-3">本周睡眠概览</h3>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="bg-white/50 rounded-lg p-3 text-center">
+                                <p class="text-sm text-indigo-700">平均睡眠时长</p>
+                                <p class="text-2xl font-bold text-indigo-900">7.2<span
+                                        class="text-sm font-normal">小时</span></p>
+                                <p class="text-xs text-green-600 mt-1">较上周 <span>↑0.3h</span></p>
+                            </div>
+
+                            <div class="bg-white/50 rounded-lg p-3 text-center">
+                                <p class="text-sm text-indigo-700">睡眠质量</p>
+                                <p class="text-2xl font-bold text-indigo-900">82<span
+                                        class="text-sm font-normal">分</span></p>
+                                <p class="text-xs text-green-600 mt-1">较上周 <span>↑4分</span></p>
+                            </div>
+
+                            <div class="bg-white/50 rounded-lg p-3 text-center">
+                                <p class="text-sm text-indigo-700">深度睡眠比例</p>
+                                <p class="text-2xl font-bold text-indigo-900">23<span
+                                        class="text-sm font-normal">%</span></p>
+                                <p class="text-xs text-red-600 mt-1">较上周 <span>↓2%</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 睡眠趋势图 -->
+                    <div class="glass bg-white/40 rounded-lg p-4 mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-medium text-indigo-900">睡眠趋势</h3>
+                            <div class="flex space-x-2">
+                                <button class="px-2 py-1 text-xs bg-indigo-100 text-indigo-700 rounded-md">周</button>
+                                <button class="px-2 py-1 text-xs bg-white/70 text-indigo-600 rounded-md">月</button>
+                                <button class="px-2 py-1 text-xs bg-white/70 text-indigo-600 rounded-md">年</button>
+                            </div>
+                        </div>
+                        <div class="h-64 w-full">
+                            <!-- 这里放置睡眠趋势图表 -->
+                            <div class="bg-white/50 rounded-lg h-full flex items-center justify-center">
+                                <div class="text-center">
+                                    <i class="fas fa-chart-line text-indigo-300 text-4xl mb-2"></i>
+                                    <p class="text-indigo-700">睡眠时长与质量趋势图</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 睡眠阶段分析 -->
+                    <div class="glass bg-white/40 rounded-lg p-4 mb-6">
+                        <h3 class="font-medium text-indigo-900 mb-3">昨晚睡眠阶段分析</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-white/50 rounded-lg p-4">
+                                <div class="flex justify-between items-center mb-2">
+                                    <p class="text-sm text-indigo-700">睡眠阶段分布</p>
+                                    <p class="text-xs text-indigo-500">总时长: 7.5小时</p>
+                                </div>
+                                <div class="h-40 w-full">
+                                    <!-- 睡眠阶段饼图 -->
+                                    <div class="bg-white/50 rounded-lg h-full flex items-center justify-center">
+                                        <div class="text-center">
+                                            <i class="fas fa-chart-pie text-indigo-300 text-3xl mb-2"></i>
+                                            <p class="text-xs text-indigo-700">睡眠阶段分布饼图</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 mt-3">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 rounded-full bg-indigo-400 mr-2"></div>
+                                        <p class="text-xs">深度睡眠：1.8小时</p>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 rounded-full bg-indigo-300 mr-2"></div>
+                                        <p class="text-xs">浅度睡眠：4.2小时</p>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 rounded-full bg-indigo-200 mr-2"></div>
+                                        <p class="text-xs">REM睡眠：1.3小时</p>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 rounded-full bg-gray-300 mr-2"></div>
+                                        <p class="text-xs">清醒：0.2小时</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white/50 rounded-lg p-4">
+                                <p class="text-sm text-indigo-700 mb-3">睡眠周期</p>
+                                <div class="h-40 w-full">
+                                    <!-- 睡眠周期图 -->
+                                    <div class="bg-white/50 rounded-lg h-full flex items-center justify-center">
+                                        <div class="text-center">
+                                            <i class="fas fa-wave-square text-indigo-300 text-3xl mb-2"></i>
+                                            <p class="text-xs text-indigo-700">睡眠周期波动图</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <p class="text-xs text-indigo-700 mb-1">睡眠分析</p>
+                                    <p class="text-xs text-gray-600">您共经历了4个完整睡眠周期，深度睡眠比例略低于理想水平。建议调整入睡前30分钟的活动，避免使用电子设备，提高深度睡眠质量。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 睡眠习惯建议 -->
+                    <div class="glass bg-white/40 rounded-lg p-4 mb-6">
+                        <h3 class="font-medium text-indigo-900 mb-3">改善睡眠的建议</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="bg-white/50 rounded-lg p-3 flex">
+                                <div class="bg-indigo-100 rounded-full h-10 w-10 flex items-center justify-center mr-3">
+                                    <i class="fas fa-moon text-indigo-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-indigo-800">规律作息</p>
+                                    <p class="text-xs text-gray-600">每天保持固定的睡眠和起床时间，包括周末。</p>
+                                </div>
+                            </div>
+                            <div class="bg-white/50 rounded-lg p-3 flex">
+                                <div class="bg-indigo-100 rounded-full h-10 w-10 flex items-center justify-center mr-3">
+                                    <i class="fas fa-dumbbell text-indigo-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-indigo-800">适度运动</p>
+                                    <p class="text-xs text-gray-600">每天进行30分钟有氧运动，但避免睡前2小时剧烈运动。</p>
+                                </div>
+                            </div>
+                            <div class="bg-white/50 rounded-lg p-3 flex">
+                                <div class="bg-indigo-100 rounded-full h-10 w-10 flex items-center justify-center mr-3">
+                                    <i class="fas fa-coffee text-indigo-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-indigo-800">限制咖啡因</p>
+                                    <p class="text-xs text-gray-600">下午2点后避免摄入咖啡因，包括咖啡、茶和巧克力。</p>
+                                </div>
+                            </div>
+                            <div class="bg-white/50 rounded-lg p-3 flex">
+                                <div class="bg-indigo-100 rounded-full h-10 w-10 flex items-center justify-center mr-3">
+                                    <i class="fas fa-temperature-low text-indigo-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-indigo-800">睡眠环境</p>
+                                    <p class="text-xs text-gray-600">保持卧室温度在18-21°C，安静、黑暗、通风良好。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 睡眠记录历史 -->
+                    <div class="glass bg-white/40 rounded-lg p-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-medium text-indigo-900">睡眠记录历史</h3>
+                            <button class="text-xs text-indigo-600 hover:text-indigo-800">查看全部</button>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="bg-white/50 rounded-lg p-3 flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm font-medium text-indigo-800">2023-11-21</p>
+                                    <div class="flex items-center mt-1">
+                                        <p class="text-xs text-gray-600 mr-3">23:10 - 06:45</p>
+                                        <p class="text-xs text-gray-600">7小时35分钟</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-medium text-indigo-800">85<span class="text-xs font-normal">分</span></p>
+                                    <p class="text-xs text-gray-600">深睡：24%</p>
+                                </div>
+                            </div>
+                            <div class="bg-white/50 rounded-lg p-3 flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm font-medium text-indigo-800">2023-11-20</p>
+                                    <div class="flex items-center mt-1">
+                                        <p class="text-xs text-gray-600 mr-3">23:25 - 06:40</p>
+                                        <p class="text-xs text-gray-600">7小时15分钟</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-medium text-indigo-800">79<span class="text-xs font-normal">分</span></p>
+                                    <p class="text-xs text-gray-600">深睡：22%</p>
+                                </div>
+                            </div>
+                            <div class="bg-white/50 rounded-lg p-3 flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm font-medium text-indigo-800">2023-11-19</p>
+                                    <div class="flex items-center mt-1">
+                                        <p class="text-xs text-gray-600 mr-3">22:50 - 06:30</p>
+                                        <p class="text-xs text-gray-600">7小时40分钟</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-medium text-indigo-800">82<span class="text-xs font-normal">分</span></p>
+                                    <p class="text-xs text-gray-600">深睡：25%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

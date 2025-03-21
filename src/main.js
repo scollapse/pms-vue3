@@ -1,5 +1,9 @@
 import { createApp } from 'vue' // 引入 createApp 方法
 import App from '@/App.vue'     // 引入 App.vue 组件
+
+// 导入Font Awesome组件
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { pinia } from '@/store' // 引入 Pinia
 import router from '@/router' // 引入路由模块
 // 导入全局路由守卫 需要放在 router 之后
@@ -13,4 +17,8 @@ import '@/assets/styles/form.css'
 const app = createApp(App)
 app.use(router) // 注册路由
 app.use(pinia) // 应用 Pinia
+
+// 注册Font Awesome组件
+app.component('font-awesome-icon', FontAwesomeIcon)
+
 app.mount('#app') // 挂载到 <div id="#app"></div> 中

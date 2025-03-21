@@ -1,6 +1,6 @@
 <template>
-    <div v-if="visible" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-        <div :class="['bg-white rounded-xl shadow-lg p-6', dialogWidth]">
+    <div v-if="modelValue" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+        <div :class="['bg-white rounded-xl shadow-lg p-6', sizeClass]">
             <!-- 标题 -->
             <div class="flex justify-between items-start mb-4">
                 <h3 class="text-xl font-semibold text-gray-900">
@@ -13,15 +13,17 @@
                 </button>
             </div>
             <!-- 表单插槽 -->
-            <slot></slot>
+            <div class="modal-body">
+                <slot></slot>
+            </div>
             <!-- 操作按钮 -->
             <div class="mt-10 flex justify-end space-x-2">
                 <button 
-                    @click="submit" 
-                    :disabled="isLoading" 
-                    class="text-white bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 font-medium rounded-xl text-sm px-5 py-2.5 flex items-center justify-center"
+                    @click="confirm" 
+                    :disabled="loading" 
+                    class="text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-xl text-sm px-5 py-2.5 flex items-center justify-center"
                 >
-                    <span v-if="!isLoading">{{ confirmButtonText }}</span>
+                    <span v-if="!loading">{{ confirmText }}</span>
                     <span v-else class="flex items-center">
                         <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -38,42 +40,59 @@
     </div>
 </template>
 
-<script>
-export default {
-    props: {
-        title: {
-            type: String,
-            required: true
-        },
-        dialogWidth: {
-            type: String,
-            default: 'max-w-md'
-        },
-        confirmButtonText: {
-            type: String,
-            default: '确定'
-        },
-        isLoading: {
-            type: Boolean,
-            default: false
-        }
+<script setup>
+import { computed } from 'vue';
+
+const props = defineProps({
+    modelValue: {
+        type: Boolean,
+        required: true
     },
-    data() {
-        return {
-            visible: false,
-        };
+    title: {
+        type: String,
+        required: true
     },
-    methods: {
-        openModal() {
-            this.visible = true;
-        },
-        closeModal() {
-            this.visible = false;
-            this.$emit('close'); // 触发 close 事件
-        },
-         submit() {
-            this.$emit('submit');
-        },
+    size: {
+        type: String,
+        default: 'md',
+        validator: (value) => ['sm', 'md', 'lg', 'xl', 'full'].includes(value)
+    },
+    confirmText: {
+        type: String,
+        default: '确定'
+    },
+    loading: {
+        type: Boolean,
+        default: false
     }
+});
+
+const emit = defineEmits(['update:modelValue', 'confirm', 'close']);
+
+const closeModal = () => {
+    emit('update:modelValue', false);
+    emit('close');
 };
+
+const confirm = () => {
+    emit('confirm');
+};
+
+const sizeClass = computed(() => {
+    switch (props.size) {
+        case 'sm': return 'max-w-md';
+        case 'md': return 'max-w-2xl';
+        case 'lg': return 'max-w-4xl';
+        case 'xl': return 'max-w-6xl';
+        case 'full': return 'w-full max-w-[90%] h-[90vh]';
+        default: return 'max-w-2xl';
+    }
+});
 </script>
+
+<style scoped>
+.modal-body {
+    max-height: calc(90vh - 180px);
+    overflow-y: auto;
+}
+</style>
