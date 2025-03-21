@@ -54,6 +54,13 @@ const routes = [
                 meta: {
                     title: '任务管理'
                 }
+            },
+            {
+                path: "/admin/health/index",
+                component: () => import('@/pages/admin/health/HealthPage.vue'),
+                meta: {
+                    title: '健康管理'
+                }
             }
         ]
     }
