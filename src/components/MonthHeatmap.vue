@@ -161,11 +161,14 @@ export default defineComponent({
     
     // 根据数量获取颜色
     const getColorForCount = (count) => {
+      console.log('getColorForCount', count);
+      // 当没有数据时返回最浅的颜色（数组中的第一个颜色）
       if (!count) return props.rangeColors[0];
       
       const max = props.max || Math.max(...props.values.map(v => v.count || 0));
       if (max === 0) return props.rangeColors[0];
       
+      // 根据数量计算颜色索引，确保使用正确的颜色深浅
       const index = Math.min(
         Math.floor((count / max) * (props.rangeColors.length - 1)),
         props.rangeColors.length - 1

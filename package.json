@@ -25,6 +25,7 @@
     "flatpickr": "^4.6.13",
     "flowbite": "^1.8.1",
     "md-editor-v3": "^5.2.2",
+    "mockjs": "^1.1.0",
     "nprogress": "^0.2.0",
     "pinia": "^2.3.0",
     "pinia-plugin-persistedstate": "^4.2.0",

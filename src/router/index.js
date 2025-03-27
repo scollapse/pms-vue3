@@ -61,6 +61,28 @@ const routes = [
                 meta: {
                     title: '健康管理'
                 }
+            },
+            // 习惯打卡相关路由
+            {
+                path: "/admin/habit/index",
+                component: () => import('@/pages/admin/habit/HabitPage.vue'),
+                meta: {
+                    title: '习惯打卡'
+                }
+            },
+            {
+                path: "/admin/habit/achievement",
+                component: () => import('@/pages/admin/habit/HabitAchievement.vue'),
+                meta: {
+                    title: '成就系统'
+                }
+            },
+            {
+                path: "/admin/habit/store",
+                component: () => import('@/pages/admin/habit/HabitStore.vue'),
+                meta: {
+                    title: '奖励商城'
+                }
             }
         ]
     }

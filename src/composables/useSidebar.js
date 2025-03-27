@@ -16,7 +16,8 @@ export function useSidebar() {
     { name: '标签管理', link: '/admin/tag/list', icon: 'fas fa-tags' },
     { name: '项目管理', link: '/admin/project/index', icon: 'fas fa-project-diagram' },
     { name: '任务管理', link: '/admin/task/index', icon: 'fas fa-tasks' },
-    { name: '健康管理', link: '/admin/health/index', icon: 'fas fa-heartbeat' }
+    { name: '健康管理', link: '/admin/health/index', icon: 'fas fa-heartbeat' },
+    { name: '习惯打卡', link: '/admin/habit/index', icon: 'fas fa-calendar-check' }
   ]);
 
   watch(

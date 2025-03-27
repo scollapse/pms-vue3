@@ -14,6 +14,11 @@ import 'nprogress/nprogress.css' // 引入 nprogress.css 样式文件
 import '@fortawesome/fontawesome-free/css/all.css';//引入 font-awesome 图标库
 import '@/assets/styles/form.css'
 
+// 导入习惯系统Mock数据（开发环境使用）
+if (process.env.NODE_ENV === 'development') {
+  import('./mock/index')
+}
+
 const app = createApp(App)
 app.use(router) // 注册路由
 app.use(pinia) // 应用 Pinia

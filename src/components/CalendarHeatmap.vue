@@ -75,14 +75,16 @@ class Heatmap {
 
     constructor(endDate, values, max = null) {
         this.endDate = new Date(endDate);
-        this.max = max || Math.max(...values.map(v => v.count || 0));
+        if (!Array.isArray(values)) {
+            values = [];
+        }
+        this.max = max || (values.length > 0 ? Math.max(...values.map(v => v.count || 0)) : 0);
         this.calendar = this.createCalendar(values);
         this.firstFullWeekOfMonths = this.getFirstFullWeekOfMonths();
         this.weekCount = this.calendar.length;
     }
 
     createCalendar(values) {
-        console.log('---------结束日期：', this.endDate);
         const calendar = [];
         const endDate = new Date(this.endDate);
         
@@ -107,10 +109,11 @@ class Heatmap {
                 
                 if (isValidDate) {
                     const value = values.find(v => new Date(v.date).toDateString() === currentDate.toDateString());
+                    const count = value ? value.count : 0;
                     weekData.push({
                         date: currentDate,
-                        count: value ? value.count : 0,
-                        colorIndex: value ? Math.ceil((value.count / this.max) * 4) : 0
+                        count: count,
+                        colorIndex: count > 0 ? Math.ceil((count / this.max) * 4) : 0
                     });
                 } else {
                     weekData.push({
@@ -430,6 +433,11 @@ export default defineComponent({
 .ch-container {
     width: 100%;
 
+    svg.ch-wrapper {
+        width: 100% !important;
+        height: auto !important;
+    }
+
     .ch-view-toggle {
         display: flex;
         justify-content: flex-end;
@@ -462,6 +470,7 @@ export default defineComponent({
         justify-content: space-between;
         align-items: center;
         width: 100%;
+        margin-top: 8px;
     }
 
     .ch-external-legend-wrapper {
@@ -502,11 +511,14 @@ svg.ch-wrapper {
     }
 
     &.dark-mode {
-
         text.ch-month-label,
         text.ch-day-label,
         .ch-legend-wrapper text {
-            fill: #fff;
+            fill: #8b949e;
+        }
+
+        rect.ch-day-square:hover {
+            stroke: #c9d1d9;
         }
     }
 }
